@@ -1,4 +1,5 @@
 from data import *
+import sys
 import csv
 import requests
 import re
@@ -24,6 +25,9 @@ for tag in soup.find_all('a', attrs={'href': re.compile(regex)}):
                       'https://raw.githubusercontent.com/henriquepgomide/caRtola/master/data/2019/', href_str)
     dict_of_files[file_name] = file_url
 
+
+print(dict_of_files)
+sys.exit()
 # Ler os dataframes dos arquivos
 list_of_dataframes = []
 for key, item in dict_of_files.items():
