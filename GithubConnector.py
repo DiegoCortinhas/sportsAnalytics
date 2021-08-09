@@ -26,7 +26,12 @@ class GithubConnector:
             if "rodada-" in json_file["name"] and ".csv" in json_file["name"]:
                file_name = json_file["name"]
                download_url = json_file["download_url"]
-               print(download_url)
                dict_of_files[file_name] = download_url
 
       return dict_of_files
+
+   def CsvDownload(self, file_url):
+      download = requests.get(file_url)
+      decoded_content = download.content.decode('utf-8')
+      file = decoded_content.splitlines()
+      return file
