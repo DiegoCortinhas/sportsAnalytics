@@ -6,7 +6,7 @@ import pandas as pd
 github = GithubConnector()
 csv_reader = CsvReader()
 
-years = [2014, 2015, 2016, 2017, 2018, 2019, 2020]
+years = [2014, 2015, 2016, 2017, 2018, 2019]
 
 dict_of_files = github.GetCsvRoundFilesUrlByYear(years)
 
@@ -15,6 +15,8 @@ list_of_dataframes = []
 
 for key, item in dict_of_files.items():
     csv_data = github.CsvDownload(item)
+    print(item)
+
     csv_reader.ReadCsvFile(csv_data)
 
     #df = pd.read_csv(item)
@@ -30,7 +32,7 @@ for key, item in dict_of_files.items():
 # mydb.commit()
 # cursor.close()
 # print "Done"
-
+'''
 # Combinar lista de DataFrames criados
 cartola = pd.concat(list_of_dataframes)
 print(cartola.shape)
@@ -38,3 +40,4 @@ cartola.shape
 
 # Ver informações do dataframe
 cartola.info()
+'''
