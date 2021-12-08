@@ -2,5 +2,4 @@ pandas
 bs4
 requests
 mysql-connector-python
-CBC
 mip
