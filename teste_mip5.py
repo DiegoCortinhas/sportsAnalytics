@@ -1,6 +1,7 @@
 from mip import Model, xsum, maximize, minimize, BINARY, CBC
+import DbConnector
 
-def BuscarJogadores(nome_posicao):
+def BuscarJogadoresPorRodada(nome_posicao):
     #TODO: Função que vai retornar os jogadores e os seus respectivos custos
 
     if nome_posicao is not None:
@@ -36,12 +37,12 @@ def AtualizarCusto(C):
 
 #Parametro de definicao da Esquema tático 
 #q = [1,4,4,2]
-def CalcularModelo(solucoes = [], q = [], C = 100):
+def CalcularModelo(rodada, J, c, a, q_i = [], epsilon = 100):
 
     m = Model("Modelo Montagem de Elenco", solver_name=CBC)
     
     # Aqui vai carregar todos os jogadores disponíveis na base diretamente na memória.
-    J, c, a = BuscarJogadores()
+    J, c, a = BuscarJogadoresPorRodada()
 
     #Array com ids dos jogadores
     #J=[1,2,3,4,5]
@@ -52,19 +53,17 @@ def CalcularModelo(solucoes = [], q = [], C = 100):
     #Array simulando os custos dos jogadores
     #c = [10.0,15.5,11.6,14.0,9.8,7.6,5.9,9.9,10.0,13.2,11.5]
 
-    #Valor de cartoletas iniciais
-    C = 100
 
     # Array simulando os scores dos jogadores
     #a = [9,9,9,9,9,9,9,9,9,9,9]
 
-    goleiro = BuscarJogadores("goleiro")
+    goleiro = BuscarJogadoresPorRodada(rodada, "goleiro")
     #goleiro = [1,2,3,4,5,6,7,8,9,0,1,2111,121,21,22,11,21,1,12,22,12,2,12,12,1]
-    defesa = BuscarJogadores("defesa")
+    defesa = BuscarJogadoresPorRodada(rodada, "defesa")
     #defesa = [65,4,45,456,65,4,43,4,43,45,454,4,5,445,34]
-    meia = BuscarJogadores("meia")
+    meia = BuscarJogadoresPorRodada(rodada, "meia")
     #meia = [56,54,45,3434,34,667,56,67,7634,4353,4]
-    ataque = BuscarJogadores("ataque")
+    ataque = BuscarJogadoresPorRodada(rodada, "ataque")
     #ataque = [676,67,65,78,5,65,5,45,45,45]
 
     #id de todos goleiros, id todos os jogadores de defesa
@@ -73,14 +72,14 @@ def CalcularModelo(solucoes = [], q = [], C = 100):
 
 
     #Variavel de dominio y
-    y = [m.add_var(var_type=BINARY) for i in P, for j in J]
+    y = [m.add_var(var_type=BINARY) for i in P for j in J]
 
     #Restricao 3.5
     for j in J:
         expr = 0
         for i in P: 
             expr += y[i][j]
-        m.add_constr(expr <=1)
+        m.add_constr(expr <= 1)
 
 
     #Restricao 3.4
@@ -88,47 +87,57 @@ def CalcularModelo(solucoes = [], q = [], C = 100):
         expr = 0
         for j in gama[i]:
             expr += y[i][j]
-        m.add_constr(expr == q[i])
+        m.add_constr(expr == q_i[i])
 
-    #Restricao 3.3
+    #Restricao 3.3 (que "vira" a 3.2)
     for i in P:
         expr = 0
         for j in J:
             expr += c[j] * y[i][j]
-        m.add_constr(expr <= C)
-
-    #Função Objetivo 3.2 -> Vai virar a restrição
-    for i in P:
-        for j in J:
-            expr += c[j]*y[i][j]
-        # TODO: Aqui vai começar o Epsilon
-        epsilon = VariarEpsilon(epsilon, c, C)
         m.add_constr(expr <= epsilon)
+
     #m.objective = minimize(expr)
 
     #Função Objetivo 3.1
+    expr = 0
     for i in P:
         for j in J:
             expr += a[j] * y[i][j]
         
     m.objective = maximize(expr)
     solucao = m.optimize()
-    solucoes.append(solucao.objective_values)
-    AtualizarCj(c, solucao)
-    C = AtualizarCusto(C)
 
-    if epsilon == C:
-        # Criterio de parada da Recursão
-        return solucoes
+    return solucao
     
-    CalcularModelo(solucoes, q, C)
+def run(perfis = [], q = [], rodadas = []):
+    banco = DbConnector.DbConnector()
+    print(banco.BuscarJogadoresPorRodada(1))
+run()
+"""
+# TODO: aqui vai incrementar todos os epsilons
+#Valor de cartoletas iniciais
+epsilon = 100
+epsilons = [epsilon] 
+# Aqui vai carregar todos os jogadores disponíveis na base diretamente na memória.
+J, c, a = BuscarJogadoresPorRodada()
+epsilons.append(CalcularEpsilons(J, c, C))
+
+solucoes = []
+for perfil in perfis:
+    # q_i é o esquema tático
+    for q_i in q:
+        for rodada in rodadas:
+            for epsilon in epsilons:
+                solucao = CalcularModelo(rodada, J, c, a, q_i, epsilon)
+                solucoes.append(solucao)
+"""
 
 
 '''
 #Restricao 3.5
 for j in J:
-    expr = xsum(y[i][j] for i in P)
-    m.add_constr(expr <=1)
+expr = xsum(y[i][j] for i in P)
+m.add_constr(expr <=1)
 
 y = xsum(variavel_dominio[i] for i in P) 
 restricao_3_5 = somatorio_yij <= 1
@@ -150,8 +159,8 @@ f2y = minimize(xsum(c[i][j]*y[i][j] for i in P for j in J))
 #y = [[model.add_var(var_type=BINARY) for j in J] for i in P]
 
 #for i in P:
-    #    expr = xsum(y[i][j] for j in gama[i])
-    #    m.add_constr(expr = q[i])
+#    expr = xsum(y[i][j] for j in gama[i])
+#    m.add_constr(expr = q[i])
 
 m.objective = f1y
 m.optimize()
