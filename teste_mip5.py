@@ -17,7 +17,7 @@ def FormatarJogadoresPorRodada(jogadores_por_rodada):
     return jogadores_resultado, custo_jogadores_resultado, score_jogadores_resultado
 
 
-def CalcularModelo(rodada, J, c, a, q_i = [], epsilon = 100):
+def CalcularModelo(rodada, J, c, a, q_i, epsilon):
 
     m = Model("Modelo Montagem de Elenco", solver_name=CBC)
     
@@ -25,19 +25,21 @@ def CalcularModelo(rodada, J, c, a, q_i = [], epsilon = 100):
     P = [1,2,3,4,5,6,7,8,9,10,11]
 
     tecnico = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "tec")
-    goleiro = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "gol")
-    zagueiro = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "zag")
-    lateral = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "lat")
-    meia = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "mei")
-    ataque = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "ata")
+    #goleiro = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "gol")
+    #zagueiro = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "zag")
+    #lateral = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "lat")
+    #meia = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "mei")
+    #ataque = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "ata")
 
     #id de todos goleiros, id todos os jogadores de defesa
     #quais jogadores podem jogar em cada posição destas
-    gama = [tecnico, goleiro, zagueiro, lateral, meia, ataque]
+    #gama = [tecnico, goleiro, zagueiro, lateral, meia, ataque]
+    gama = [tecnico]
 
 
     #Variavel de dominio y
-    y = [m.add_var(var_type=BINARY) for i in P for j in J]
+    y = [m.add_var(name='y', var_type=BINARY) for i in P for j in J]
+    y = m.var_by_name('y')
 
     #Restricao 3.5
     for j in J:
@@ -45,7 +47,6 @@ def CalcularModelo(rodada, J, c, a, q_i = [], epsilon = 100):
         for i in P: 
             expr += y[i][j]
         m.add_constr(expr <= 1)
-
 
     #Restricao 3.4
     for i in P:
@@ -71,7 +72,6 @@ def CalcularModelo(rodada, J, c, a, q_i = [], epsilon = 100):
         
     m.objective = maximize(expr)
     solucao = m.optimize()
-
     return solucao
     
 def run(perfis = [], q = [], rodadas = []):
@@ -84,25 +84,27 @@ def run(perfis = [], q = [], rodadas = []):
     for perfil in perfis:
         # q_i é o esquema tático
         for q_i in q:
-            for rodada in range(1,38):
+            for rodada in range(1,2):
                 # Cartoletas iniciais
                 C = 100
                 # Aqui vai carregar todos os jogadores disponíveis NAQUELA RODADA
                 jogadores_por_rodada = banco.BuscarTodosJogadoresPorRodada(rodada)
                 J, c, a = FormatarJogadoresPorRodada(jogadores_por_rodada)
                 
-                epsilons = range(1, C, min(c)) 
+                epsilons = range(round(min(c)), C, round(min(c))) 
                 
                 #print(J)
                 #print(c)
                 #print(a)
                 #print(epsilons, "epsilons")
+                
                 for epsilon in epsilons:
-                    print(epsilon)
-                    #solucao = CalcularModelo(rodada, J, c, a, q_i, epsilon)
-                    #solucoes.append(solucao)
-                print(min(c), "min(c)")
-                sys.exit()
+                    #print(epsilon)
+                    solucao = CalcularModelo(rodada, J, c, a, q_i, epsilon)
+                    solucoes.append(solucao)
+                #print(min(c), "min(c)")
+                    print(solucao)
+            sys.exit()
 run()
 
 

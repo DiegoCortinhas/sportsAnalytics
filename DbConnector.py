@@ -31,7 +31,7 @@ class DbConnector:
         cursor = self.connection.cursor()
         parametros = (str(rodada), )
         sql = "SELECT atletas_nome, atletas_rodada_id, atletas_preco_num, atletas_variacao_num \
-            FROM valorizacao where atletas_rodada_id = %s AND atletas_status_id in ('Provável', 'Dúvida')"
+            FROM valorizacao where atletas_rodada_id = %s AND atletas_status_id = 'Provável'"
 
         if posicao != "":
             sql += " AND atletas_posicao_id = %s"
@@ -46,7 +46,7 @@ class DbConnector:
         parametros = (str(rodada), )
         # Vamos deixar o "atletas_nome" por enquanto para facilitar o debug
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num \
-            FROM valorizacao where atletas_rodada_id = %s AND atletas_status_id in ('Provável', 'Dúvida') \
+            FROM valorizacao where atletas_rodada_id = %s AND atletas_status_id = 'Provável' \
                 group by atletas_atleta_id;"
         
         cursor.execute(sql, parametros)
