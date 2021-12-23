@@ -1,74 +1,39 @@
+import sys
 from mip import Model, xsum, maximize, minimize, BINARY, CBC
 import DbConnector
 
-def BuscarJogadoresPorRodada(nome_posicao):
-    #TODO: Função que vai retornar os jogadores e os seus respectivos custos
+banco = DbConnector.DbConnector()
 
-    if nome_posicao is not None:
-        # Aqui vai buscar todos os jogadores por posicao
-        pass
-    else:
-        # Aqui vai buscar todos os jogadores da base de dados
-        pass
+def FormatarJogadoresPorRodada(jogadores_por_rodada):
+    jogadores_resultado = []
+    custo_jogadores_resultado = []
+    score_jogadores_resultado = []
 
-    # VALORES MOCKADOS
-    # vai virar o array "J"
-    jogadores_resultado = [1,2,3]
-    # vai virar PARTE DO ARRAY "c"
-    custos_jogadores_resultado = [10,20,30]
-    # vai virar o array "a"
-    score_jogadores_resultado = [10,10,10]
-    return jogadores_resultado, custos_jogadores_resultado, score_jogadores_resultado
+    for jogador in jogadores_por_rodada:
+        jogadores_resultado.append(jogador[1])
+        custo_jogadores_resultado.append(jogador[2])
+        score_jogadores_resultado.append(jogador[3])
 
-def VariarEpsilon(epsilon, c, C):
-    if epsilon != min(c) or epsilon is None:
-        # Define o valor de Epsilon na primeira execução da recursão
-        epsilon = min(c)
-    else:
-        if epsilon <= C:
-            #TODO: Aqui vem a dinâmica de, a partir dos limites, ir incrementando o epsilon
-            pass
+    return jogadores_resultado, custo_jogadores_resultado, score_jogadores_resultado
 
-    return epsilon
 
-def AtualizarCusto(C):
-    #TODO: Aqui vai vir a lógica para ir "tirando o dinheiro" a cada novo jogador na escalação
-    pass
-
-#Parametro de definicao da Esquema tático 
-#q = [1,4,4,2]
 def CalcularModelo(rodada, J, c, a, q_i = [], epsilon = 100):
 
     m = Model("Modelo Montagem de Elenco", solver_name=CBC)
     
-    # Aqui vai carregar todos os jogadores disponíveis na base diretamente na memória.
-    J, c, a = BuscarJogadoresPorRodada()
-
-    #Array com ids dos jogadores
-    #J=[1,2,3,4,5]
-
     #Array com ids das posições dos jogadores
     P = [1,2,3,4,5,6,7,8,9,10,11]
 
-    #Array simulando os custos dos jogadores
-    #c = [10.0,15.5,11.6,14.0,9.8,7.6,5.9,9.9,10.0,13.2,11.5]
-
-
-    # Array simulando os scores dos jogadores
-    #a = [9,9,9,9,9,9,9,9,9,9,9]
-
-    goleiro = BuscarJogadoresPorRodada(rodada, "goleiro")
-    #goleiro = [1,2,3,4,5,6,7,8,9,0,1,2111,121,21,22,11,21,1,12,22,12,2,12,12,1]
-    defesa = BuscarJogadoresPorRodada(rodada, "defesa")
-    #defesa = [65,4,45,456,65,4,43,4,43,45,454,4,5,445,34]
-    meia = BuscarJogadoresPorRodada(rodada, "meia")
-    #meia = [56,54,45,3434,34,667,56,67,7634,4353,4]
-    ataque = BuscarJogadoresPorRodada(rodada, "ataque")
-    #ataque = [676,67,65,78,5,65,5,45,45,45]
+    tecnico = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "tec")
+    goleiro = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "gol")
+    zagueiro = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "zag")
+    lateral = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "lat")
+    meia = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "mei")
+    ataque = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "ata")
 
     #id de todos goleiros, id todos os jogadores de defesa
     #quais jogadores podem jogar em cada posição destas
-    gama = [goleiro,defesa,meia,ataque]
+    gama = [tecnico, goleiro, zagueiro, lateral, meia, ataque]
 
 
     #Variavel de dominio y
@@ -110,27 +75,35 @@ def CalcularModelo(rodada, J, c, a, q_i = [], epsilon = 100):
     return solucao
     
 def run(perfis = [], q = [], rodadas = []):
-    banco = DbConnector.DbConnector()
-    print(banco.BuscarJogadoresPorRodada(1))
-run()
-"""
-# TODO: aqui vai incrementar todos os epsilons
-#Valor de cartoletas iniciais
-epsilon = 100
-epsilons = [epsilon] 
-# Aqui vai carregar todos os jogadores disponíveis na base diretamente na memória.
-J, c, a = BuscarJogadoresPorRodada()
-epsilons.append(CalcularEpsilons(J, c, C))
+    #resultado = banco.BuscarJogadoresPorRodadaEPosicao(1, "gol")
+    resultado = banco.BuscarTodosJogadoresPorRodada(1)
 
-solucoes = []
-for perfil in perfis:
-    # q_i é o esquema tático
-    for q_i in q:
-        for rodada in rodadas:
-            for epsilon in epsilons:
-                solucao = CalcularModelo(rodada, J, c, a, q_i, epsilon)
-                solucoes.append(solucao)
-"""
+    solucoes = []
+    perfis = [1,2,3,4]
+    q = [1,1,2,2,4,2]
+    for perfil in perfis:
+        # q_i é o esquema tático
+        for q_i in q:
+            for rodada in range(1,38):
+                # Cartoletas iniciais
+                C = 100
+                # Aqui vai carregar todos os jogadores disponíveis NAQUELA RODADA
+                jogadores_por_rodada = banco.BuscarTodosJogadoresPorRodada(rodada)
+                J, c, a = FormatarJogadoresPorRodada(jogadores_por_rodada)
+                
+                epsilons = range(1, C, min(c)) 
+                
+                #print(J)
+                #print(c)
+                #print(a)
+                #print(epsilons, "epsilons")
+                for epsilon in epsilons:
+                    print(epsilon)
+                    #solucao = CalcularModelo(rodada, J, c, a, q_i, epsilon)
+                    #solucoes.append(solucao)
+                print(min(c), "min(c)")
+                sys.exit()
+run()
 
 
 '''

@@ -27,13 +27,28 @@ class DbConnector:
         cursor.execute(add_item, linha)
         self.connection.commit()
 
-    def BuscarJogadoresPorRodadaEPosicao(self, rodada, posicao):
-        # Variáveis para preparar a inserção no banco
+    def BuscarJogadoresPorRodadaEPosicao(self, rodada, posicao = ""):
         cursor = self.connection.cursor()
+        parametros = (str(rodada), )
         sql = "SELECT atletas_nome, atletas_rodada_id, atletas_preco_num, atletas_variacao_num \
-            FROM valorizacao where atletas_rodada_id = %s"
+            FROM valorizacao where atletas_rodada_id = %s AND atletas_status_id in ('Provável', 'Dúvida')"
 
-        cursor.execute(sql, (str(rodada), ))
+        if posicao != "":
+            sql += " AND atletas_posicao_id = %s"
+            parametros = (rodada, posicao)
+
+        cursor.execute(sql, parametros)
         resultado = cursor.fetchall()
         return resultado
 
+    def BuscarTodosJogadoresPorRodada(self, rodada):
+        cursor = self.connection.cursor()
+        parametros = (str(rodada), )
+        # Vamos deixar o "atletas_nome" por enquanto para facilitar o debug
+        sql = "SELECT atletas_nome, atletas_atleta_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num \
+            FROM valorizacao where atletas_rodada_id = %s AND atletas_status_id in ('Provável', 'Dúvida') \
+                group by atletas_atleta_id;"
+        
+        cursor.execute(sql, parametros)
+        resultado = cursor.fetchall()
+        return resultado
