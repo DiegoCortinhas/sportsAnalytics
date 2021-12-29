@@ -1,4 +1,5 @@
-import sys
+import sys, heapq
+from operator import indexOf
 from mip import Model, xsum, maximize, minimize, BINARY, CBC
 import DbConnector
 
@@ -22,7 +23,7 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     m = Model("Modelo Montagem de Elenco", solver_name=CBC)
     
     #Array com ids das posições dos jogadores
-    P = [1,2,3,4,5,6,7,8,9,10,11]
+    P = ["tec", "gol", "zag", "lat", "mei", "ata"]
 
     tecnico = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "tec")
     #goleiro = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "gol")
@@ -36,19 +37,26 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     #gama = [tecnico, goleiro, zagueiro, lateral, meia, ataque]
     gama = [tecnico]
 
-
     #Variavel de dominio y
-    y = [m.add_var(name='y', var_type=BINARY) for i in P for j in J]
-    y = m.var_by_name('y')
+    y = [[m.add_var(name='y', var_type=BINARY) for i in P ] for j in J]
+    #y = m.var_by_name('y')
+    print(len(J), "len j")
 
-    #Restricao 3.5
-    for j in J:
+    #Restricao 3.6
+    for j in range(len(J)):
         expr = 0
-        for i in P: 
-            expr += y[i][j]
+        for i in range(len(P)):
+            print(i, "i")
+            #indice_j = indexOf(J, j)
+            print(j, "j")
+            y_aux = y[i][j]
+            print(y_aux.x, "y_aux.x")
+            expr += y_aux.x  if not None else 0
         m.add_constr(expr <= 1)
 
-    #Restricao 3.4
+    print("Finalizou restricao 3.5 ")
+
+    #Restricao 3.5
     for i in P:
         expr = 0
         for j in gama[i]:
@@ -72,6 +80,7 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
         
     m.objective = maximize(expr)
     solucao = m.optimize()
+    print(solucao, "solucao")
     return solucao
     
 def run(perfis = [], q = [], rodadas = []):
@@ -90,8 +99,24 @@ def run(perfis = [], q = [], rodadas = []):
                 # Aqui vai carregar todos os jogadores disponíveis NAQUELA RODADA
                 jogadores_por_rodada = banco.BuscarTodosJogadoresPorRodada(rodada)
                 J, c, a = FormatarJogadoresPorRodada(jogadores_por_rodada)
+
+                # Pega os mínimos preços dos jogadores por seçao do campo na rodada para ter os limites de epsilons
+                """
+                sum(heapq.nsmallest(q_i,c_q0)) + sum(heapq.nsmallest(q[1],c_q1)) + sum(heapq.nsmallest(q[3],c_q3))
+                """
                 
-                epsilons = range(round(min(c)), C, round(min(c))) 
+                # Colocar epsilon variando em "min(c) vezes"
+                soma_epsilons = sum(heapq.nsmallest(11,c))
+                epsilon = soma_epsilons
+                epsilons = []
+                while epsilon < C:
+                    # Chega perto dos casos em que estourem o valor de Cartoletas
+                    if (epsilon + min(c)) > C:
+                        epsilon = C
+                    else:
+                        epsilon += min(c)
+                        
+                    epsilons.append(epsilon) 
                 
                 #print(J)
                 #print(c)
@@ -99,11 +124,12 @@ def run(perfis = [], q = [], rodadas = []):
                 #print(epsilons, "epsilons")
                 
                 for epsilon in epsilons:
-                    #print(epsilon)
+                    print(epsilon, "epsilon")
                     solucao = CalcularModelo(rodada, J, c, a, q_i, epsilon)
+                    solucao = []
                     solucoes.append(solucao)
                 #print(min(c), "min(c)")
-                    print(solucao)
+                    #print(solucao)
             sys.exit()
 run()
 
