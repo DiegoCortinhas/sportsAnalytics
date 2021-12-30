@@ -1,4 +1,4 @@
-import sys, heapq
+import sys, heapq, pprint
 from operator import indexOf
 from mip import Model, xsum, maximize, minimize, BINARY, CBC
 import DbConnector
@@ -26,62 +26,58 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     P = ["tecnico", "goleiro", "zagueiro", "lateral", "meia", "atacante"]
 
     tecnico = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "tec")
-    #goleiro = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "gol")
-    #zagueiro = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "zag")
-    #lateral = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "lat")
-    #meia = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "mei")
-    #ataque = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "ata")
+    goleiro = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "gol")
+    zagueiro = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "zag")
+    lateral = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "lat")
+    meia = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "mei")
+    ataque = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "ata")
 
     #id de todos goleiros, id todos os jogadores de defesa
     #quais jogadores podem jogar em cada posição destas
-    #gama = [tecnico, goleiro, zagueiro, lateral, meia, ataque]
-    gama = [tecnico]
+    gama = [tecnico, goleiro, zagueiro, lateral, meia, ataque]
+    
 
     #Variavel de dominio y
-    y = [[m.add_var(name='y', var_type=BINARY) for i in P ] for j in J]
+    y = [[m.add_var(name='y', var_type=BINARY) for j in range(len(J)) ] for i in range(len(P))]
     #y = m.var_by_name('y')
-    #print(len(J), "len j")
+    # #Restricao 3.6
+    # for j in range(len(J)):
+    #     expr=0
+    #     for i in range(len(P)):
+    #         print(i,"i")
+    #         print(j,"j")
+    #         y_aux = y[i][j]
+    #         expr += y_aux
+    #     m.add_constr(expr<=1)
 
-    #Restricao 3.6
     for j in range(len(J)):
-        expr=0
-        for i in range(len(P)):
-            print(i,"i")
-            print(j,"j")
-            y_aux = y[i][j]
-            expr += y_aux
-        m.add_constr(expr<=1)
+        m += xsum(y[i][j] for i in range(len(P))) <= 1
+
     #m += xsum([y[i][j] for i in range(len(P))] for j in range(len (J)) <= 1
-    #print("fim da restricao 3.6")
+    print("fim da restricao 3.6")
 
     #Restricao 3.5
-    for i in P:
-        #m+= xsum(y[i][j] for j in gama[i]) == q_i[i]
-        expr = 0
-        for j in gama[i]:
-            expr += y[i][j]
-        m.add_constr(expr == q_i[i])
+    expr = 0
+    for i in range(len(P)):
+        m += xsum(y[i][j] for j in range(len(gama[i]))) == q_i[i]
 
+    print("fim da restricao 3.5")
     #m += xsum([y[i][j] for i in range(len(P))] for j in range(len (J)) <= 1)
 
     #Restricao 3.3 (que "vira" a 3.2)
-    for i in P:
-        expr = 0
-        for j in J:
-            expr += c[j] * y[i][j]
-        m.add_constr(expr <= epsilon)
+    for j in range(len(J)):
+        m += xsum(c[j] * y[i][j] for i in range(len(P))) <= epsilon
+
+    print("fim da restricao 3.3")
 
     #m.objective = minimize(expr)
 
     #Função Objetivo 3.1
-    expr = 0
-    for i in P:
-        for j in J:
-            expr += a[j] * y[i][j]
-        
-    m.objective = maximize(expr)
+    for j in range(len(J)):
+        objetivo = xsum(a[j] * y[i][j] for i in range(len(P)))
+
+    m.objective = maximize(objetivo)
     solucao = m.optimize()
-    print(solucao, "solucao")
     return solucao
     
 def run(perfis = [], q = [], rodadas = []):
@@ -90,7 +86,11 @@ def run(perfis = [], q = [], rodadas = []):
 
     solucoes = []
     perfis = [1,2,3,4]
-    q = [1,1,2,2,4,2]
+    #[tecnico, goleiro, zagueiro, lateral, meia, ataque]
+    q = [
+        [1,1,2,2,4,2],
+        [1,1,3,2,3,2]
+    ]
     for perfil in perfis:
         # q_i é o esquema tático
         for q_i in q:
@@ -127,10 +127,10 @@ def run(perfis = [], q = [], rodadas = []):
                 for epsilon in epsilons:
                     #print(epsilon, "epsilon")
                     solucao = CalcularModelo(rodada, J, c, a, q_i, epsilon)
-                    solucao = []
                     solucoes.append(solucao)
                     #print(min(c), "min(c)")
                     #print(solucao)
+            pprint.pprint(solucoes[0])
             sys.exit()
 run()
 
