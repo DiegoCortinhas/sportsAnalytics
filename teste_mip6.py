@@ -42,15 +42,17 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     #y = m.var_by_name('y')
     #print(len(J), "len j")
 
+    P_range = set(range(len(P)))
+
     #Restricao 3.6
     for j in J:
-        m += xsum(y[i][j] for i in range(len(P)) <=1
+        m += xsum(y[i][j] for i in P_range) <=1
 
     #m += xsum([y[i][j] for i in range(len(P))] for j in range(len (J)) <= 1
     #print("fim da restricao 3.6")
 
     #Restricao 3.5
-    for i in range(len(P)):
+    for i in P_range:
         m+= xsum(y[i][j] for j in gama[i]) == q_i[i]
         #expr = 0
         #for j in gama[i]:
@@ -59,27 +61,19 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
 
     #m += xsum([y[i][j] for i in range(len(P))] for j in range(len (J)) <= 1)
 
-    
     #Restricao 3.3 (que "vira" a 3.2)
-    for i in P:
-        expr = 0
-        for j in J:
-            expr += c[j] * y[i][j]
-        m.add_constr(expr <= epsilon)
+    for j in J:
+        m += xsum(c[j] * y[i][j] for i in P_range) <= epsilon
 
     #m.objective = minimize(expr)
 
     #Função Objetivo 3.1
-    expr = 0
-    for i in P:
-        for j in J:
-            expr += a[j] * y[i][j]
-        
-    m.objective = maximize(expr)
+    m.objective = maximize(xsum(a[j] * y[i][j] for i in P_range for j in J))
     solucao = m.optimize()
+
     print(solucao, "solucao")
     return solucao
-    
+
 def run(perfis = [], q = [], rodadas = []):
     #resultado = banco.BuscarJogadoresPorRodadaEPosicao(1, "gol")
     resultado = banco.BuscarTodosJogadoresPorRodada(1)
