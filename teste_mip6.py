@@ -43,27 +43,23 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     #print(len(J), "len j")
 
     #Restricao 3.6
-    for j in range(len(J)):
-        expr=0
-        for i in range(len(P)):
-            print(i,"i")
-            print(j,"j")
-            y_aux = y[i][j]
-            expr += y_aux
-        m.add_constr(expr<=1)
+    for j in J:
+        m += xsum(y[i][j] for i in range(len(P)) <=1
+
     #m += xsum([y[i][j] for i in range(len(P))] for j in range(len (J)) <= 1
     #print("fim da restricao 3.6")
 
     #Restricao 3.5
-    for i in P:
-        #m+= xsum(y[i][j] for j in gama[i]) == q_i[i]
-        expr = 0
-        for j in gama[i]:
-            expr += y[i][j]
-        m.add_constr(expr == q_i[i])
+    for i in range(len(P)):
+        m+= xsum(y[i][j] for j in gama[i]) == q_i[i]
+        #expr = 0
+        #for j in gama[i]:
+        #    expr += y[i][j]
+        #m.add_constr(expr == q_i[i])
 
     #m += xsum([y[i][j] for i in range(len(P))] for j in range(len (J)) <= 1)
 
+    
     #Restricao 3.3 (que "vira" a 3.2)
     for i in P:
         expr = 0
