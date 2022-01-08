@@ -30,7 +30,9 @@ class DbConnector:
     def BuscarJogadoresPorRodadaEPosicao(self, rodada, posicao = ""):
         cursor = self.connection.cursor()
         parametros = (str(rodada), )
-        sql = "SELECT atletas_nome, atletas_rodada_id, atletas_preco_num, atletas_variacao_num \
+        #sql = "SELECT atletas_nome, atletas_rodada_id, atletas_preco_num, atletas_variacao_num \
+        #    FROM valorizacao where atletas_rodada_id = %s AND atletas_status_id = 'Provável'"
+        sql = "SELECT atletas_nome, atletas_atleta_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num \
             FROM valorizacao where atletas_rodada_id = %s AND atletas_status_id = 'Provável'"
 
         if posicao != "":
