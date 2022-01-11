@@ -141,28 +141,63 @@ def run(perfis = [], q = [], rodadas = []):
                 """
                 gama_estrutura = []
                 time_mais_barato = []
-                contador = 0
                 
-                for i in q_i:
-                    
-                    print("Comecando posicao: " + q_nome_posicao[contador])
-                    escolha, valores_escolhas, _ = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, q_nome_posicao[contador]))
-                    escolha_mais_barato = heapq.nsmallest(i, valores_escolhas)[contador]
-                    
-                    #escolha_mais_barato_sql = banco.BuscarJogadoresPorRodadaPrecoEScore(rodada=rodada,preco=escolha_mais_barato,score=0,posicao="tec")
-                    gama_estrutura.append(escolha)
-                    indice_escolha_mais_barato=indexOf(valores_escolhas,escolha_mais_barato)
-                    time_mais_barato.append(escolha[indice_escolha_mais_barato])
-                    print(escolha[indice_escolha_mais_barato],"escolha")
-                    contador+=1
-                    if contador == i:
-                        contador=0
+                tecnico, valores_tecnicos, _ = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, "tec"))
+                tecnico_mais_barato = heapq.nsmallest(1, valores_tecnicos)[0]
+                #tecnico_mais_barato_sql = banco.BuscarJogadoresPorRodadaPrecoEScore(rodada=rodada,preco=tecnico_mais_barato,score=0,posicao="tec")
+                gama_estrutura.append(tecnico)
+                indice_tecnico_mais_barato=indexOf(valores_tecnicos,tecnico_mais_barato)
+                time_mais_barato.append(tecnico[indice_tecnico_mais_barato])
+                print(tecnico[indice_tecnico_mais_barato],"tecnico")
+            
+
+                goleiro, valores_goleiros, _ = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, "gol"))
+                goleiro_mais_barato = heapq.nsmallest(1, valores_goleiros)[0]
+                #goleiro_mais_barato_sql = banco.BuscarJogadoresPorRodadaPrecoEScore(rodada=rodada,preco=goleiro_mais_barato,posicao='gol')
+                gama_estrutura.append(goleiro)
+                indice_goleiro_mais_barato=indexOf(valores_goleiros,goleiro_mais_barato)
+                print(goleiro[indice_goleiro_mais_barato],"goleiro")
+                time_mais_barato.append(goleiro[indice_goleiro_mais_barato])
+
+                #rever como fazer lista com mais de 1 zagueiro mais barato
+                zagueiros_selecionados = []
+                zagueiro, valores_zagueiros, _ = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, "zag"))
+                zagueiro_mais_barato = heapq.nsmallest(1, valores_zagueiros)[0]
+
+                #zagueiro_mais_barato_sql = banco.BuscarJogadoresPorRodadaPrecoEScore(rodada=rodada,preco=zagueiro_mais_barato,posicao='zag')
+                gama_estrutura.append(zagueiro)
+                indice_zagueiro_mais_barato=indexOf(valores_zagueiros,zagueiro_mais_barato)
+                print(zagueiro[indice_zagueiro_mais_barato],"zagueiro")
+                time_mais_barato.append(zagueiro[indice_zagueiro_mais_barato])
+                
+                lateral, valores_laterais, _ = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, "lat"))
+                lateral_mais_barato = heapq.nsmallest(1, valores_laterais)[0]
+                #lateral_mais_barato_sql = banco.BuscarJogadoresPorRodadaPrecoEScore(rodada=rodada,preco=lateral_mais_barato,posicao='lat')
+                gama_estrutura.append(lateral)
+                indice_lateral_mais_barato=indexOf(valores_laterais,lateral_mais_barato)
+                print(lateral[indice_lateral_mais_barato],"lateral")
+                time_mais_barato.append(lateral[indice_lateral_mais_barato])
+                #print(lateral_mais_barato,"Lateral Mais Barato")
+
+                meia, valores_meias, _ = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, "mei"))
+                meia_mais_barato = heapq.nsmallest(1, valores_meias)[0]
+                #meia_mais_barato_sql = banco.BuscarJogadoresPorRodadaPrecoEScore(rodada=rodada,preco=meia_mais_barato,posicao='mei')
+                gama_estrutura.append(meia)
+                indice_meia_mais_barato=indexOf(valores_meias,meia_mais_barato)
+                print(meia[indice_meia_mais_barato],"meia")
+                time_mais_barato.append(meia[indice_meia_mais_barato])
+                #print(meia_mais_barato,"Meia Mais Barato")
+                
+                ataque, valores_ataque, _ = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, "ata"))
+                ataque_mais_barato = heapq.nsmallest(1, valores_ataque)[0]
+                #ataque_mais_barato_sql = banco.BuscarJogadoresPorRodadaPrecoEScore(rodada=rodada,preco=ataque_mais_barato,posicao='ata')
+                gama_estrutura.append(ataque)
+                indice_ataque_mais_barato=indexOf(valores_ataque,ataque_mais_barato)
+                print(ataque[indice_ataque_mais_barato],"ataque")
+                time_mais_barato.append(ataque[indice_ataque_mais_barato])
                 
 
-                    
-                
-
-                #print(time_mais_barato,"time mais baratos por posicao")
+                print(time_mais_barato,"time mais baratos por posicao")
                 #print(goleiro_mais_barato_sql, "Goleiro mais barato")
                 # Colocar epsilon variando em "min(c) vezes"
                 # OBS: colocamos 12 porque agora tem o técnico tbm
