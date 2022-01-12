@@ -56,4 +56,13 @@ class DbConnector:
         return resultado
 
 
-    
+    def BuscarJogadorPorId(self, jogador_id):
+        cursor = self.connection.cursor(buffered=True)
+        parametros = (str(jogador_id), )
+        # Vamos deixar o "atletas_nome" por enquanto para facilitar o debug
+        sql = "SELECT atletas_nome, atletas_atleta_id, atletas_posicao_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num \
+            FROM valorizacao where atletas_atleta_id = %s"
+        
+        cursor.execute(sql, parametros)
+        resultado = cursor.fetchone()
+        return resultado

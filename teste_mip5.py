@@ -111,6 +111,7 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon, gama_estrutura):
 def run(perfis = [], q = [], rodadas = []):
     C = 100
     solucoes = []
+    conjunto_solucoes = []
     #Deixando somente 1 perfil para teste
     perfis = [1]
     limite_rodadas = 5
@@ -129,76 +130,71 @@ def run(perfis = [], q = [], rodadas = []):
                 jogadores_ja_escolhidos = []
                 print("COMEÇOU A RODADA: \n" + str(rodada))
 
-                # Cartoletas iniciais
-                
-                # Aqui vai carregar todos os jogadores disponíveis NAQUELA RODADA
-                jogadores_por_rodada = banco.BuscarTodosJogadoresPorRodada(rodada)
-                J, c, a = FormatarJogadoresPorRodada(jogadores_por_rodada)
-
-                # Pega os mínimos preços dos jogadores por seçao do campo na rodada para ter os limites de epsilons
-                """
-                sum(heapq.nsmallest(q_i,c_q0)) + sum(heapq.nsmallest(q[1],c_q1)) + sum(heapq.nsmallest(q[3],c_q3))
-                """
                 gama_estrutura = []
                 time_mais_barato = []
                 contador = 0
                 
+                # Calcula o time mais barato possível na rodada
                 #q_i = [1,1,3,2,3,2]
                 for i in range(len(q_i)):
                     print("Comecando posicao: " + q_nome_posicao[i])
                     print(contador, "contador")
 
-                    jogadores_posicao, valores_escolhas, _ = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, q_nome_posicao[i]))
+                    jogadores_posicao, valores_escolhas, scores_escolhas = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, q_nome_posicao[i]))
                     
                     escolhas_mais_barato = heapq.nsmallest(q_i[i], valores_escolhas)
                     
                     print(valores_escolhas, "valores_escolhas")
 
+                    contador+=1
+                    #limite_inferior_epsilon = 0
                     for escolha in escolhas_mais_barato:
-                        print("Novo jogador encontrado posicao: " + q_nome_posicao[i])
+                        print("Novo jogador encontrado na posicao: " + q_nome_posicao[i])
                         gama_estrutura.append(escolha)
                         indice_escolha_mais_barato=indexOf(valores_escolhas, escolha)
                         jogador_escolhido = jogadores_posicao[indice_escolha_mais_barato]
                         if jogador_escolhido not in jogadores_ja_escolhidos:
                             jogadores_ja_escolhidos.append(jogador_escolhido)
                             time_mais_barato.append(jogador_escolhido)
+                    #        limite_inferior_epsilon += valores_escolhas[indice_escolha_mais_barato]
                             print(jogador_escolhido, "jogador_escolhido")
-                        
-                    #escolha_mais_barato = heapq.nsmallest(i, valores_escolhas)[contador]
-                    
-                    #escolha_mais_barato_sql = banco.BuscarJogadoresPorRodadaPrecoEScore(rodada=rodada,preco=escolha_mais_barato,score=0,posicao="tec")
-                    
-                    #chegou_na_proxima_posicao = contador != q_i[i]
-                    ## if q_i[i+1] is not None:
-                    #try:
-                    #    if chegou_na_proxima_posicao:
-                    #        contador = q_i[i+1]
-                    #except IndexError:
-                    #    continue
-                    
-                    contador+=1
-                #print(time_mais_barato,"time mais baratos por posicao")
-                #print(goleiro_mais_barato_sql, "Goleiro mais barato")
-                # Colocar epsilon variando em "min(c) vezes"
-                # OBS: colocamos 12 porque agora tem o técnico tbm
-                #soma_epsilons = tecnico_mais_barato + goleiro_mais_barato + zagueiro_mais_barato + lateral_mais_barato + meia_mais_barato + ataque_mais_barato
-                #print(soma_epsilons)
-                sys.exit()
 
-                epsilon = soma_epsilons
+                limite_inferior_epsilon = 0
+                print("\n\nTIME MAIS BARATO CALCULADO PARA EPSILON")
+                for jogador_id in time_mais_barato:
+                    jogador = banco.BuscarJogadorPorId(jogador_id)
+                    limite_inferior_epsilon += jogador[3]
+                    nome_jogador = str(jogador[0])
+                    id_jogador = str(jogador[1])
+                    posicao_jogador = str(jogador[2])
+                    custo_jogador = str(jogador[3])
+                    score_jogador = str(jogador[4])
+
+                    print("Jogador: " + nome_jogador + "(" + posicao_jogador + ") -> " + score_jogador + " pontos; Custo: " + custo_jogador )
+
+                print("LIMITE INFERIOR CALCULADO PARA O EPSILON: " + str(limite_inferior_epsilon))
+                sys.exit()
+                epsilon = limite_inferior_epsilon
                 epsilons = []
                 while epsilon < C:
                     # Chega perto dos casos em que estourem o valor de Cartoletas
-                    if (epsilon + min(c)) > C:
+                    if (epsilon + min(valores_escolhas)) > C:
                         epsilon = C
                     else:
-                        epsilon += min(c)
+                        epsilon += min(valores_escolhas)
                         
                     epsilons.append(epsilon) 
-                
+                    
+                # Aqui vai carregar todos os jogadores disponíveis NAQUELA RODADA
+                jogadores_por_rodada = banco.BuscarTodosJogadoresPorRodada(rodada)
+                # Formata variáveis para entrada na função que calcula o modelo
+                J, c, a = FormatarJogadoresPorRodada(jogadores_por_rodada)
                 for epsilon in epsilons:
-                    solucao = CalcularModelo(rodada, J, c, a, q_i, epsilon, gama_estrutura)
-                    solucoes.append(solucao)
+                    solucao_maior_score = CalcularModelo(rodada, J, c, a, q_i, epsilon, gama_estrutura)
+                    solucao_menor_custo = maximize()
+                    print(solucao_maior_score, "solucao")
+                    solucoes.append(solucao_maior_score)
+            conjunto_solucoes.append(solucoes)
 
             print("COMEÇA PRINT SOLUÇÕES")
             pprint(solucoes)

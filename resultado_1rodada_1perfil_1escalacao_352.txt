@@ -1,0 +1,62 @@
+COMEÇOU O ESQUEMA TÁTICO: 
+[1, 1, 3, 2, 3, 2]
+COMEÇOU A RODADA: 
+1
+Comecando posicao: tec
+0 contador
+[10.27, 4.19, 8.56, 8.75, 9.84, 2.13, 10.59, 9.28, 4.65, 11.47, 6.51, 5.45, 7.39, 8.89, 8.2, 8.48, 6.48, 7.31, 7.02] valores_escolhas
+Novo jogador encontrado na posicao: tec
+37333 jogador_escolhido
+Comecando posicao: gol
+1 contador
+[22.69, 5.2, 7.63, 6.24, 8.6, 0.69, 6.17, 2.08, 13.18, 7.63, 2.78, 4.16, 8.6, 6.94, 4.65, 0.69, 9.02, 11.73, 8.33] valores_escolhas
+Novo jogador encontrado na posicao: gol
+69040 jogador_escolhido
+Comecando posicao: zag
+2 contador
+[16.0, 12.49, 3.47, 15.0, 14.15, 12.0, 6.38, 3.12, 6.24, 4.65, 5.48, 7.22, 6.66, 7.08, 5.0, 6.8, 4.09, 8.0, 9.37, 6.38, 3.4, 11.38, 7.0, 4.3, 3.82, 4.65, 3.54, 6.66, 9.85, 3.26, 5.62, 3.54, 1.39, 7.98, 0.69, 5.97, 3.75] valores_escolhas
+Novo jogador encontrado na posicao: zag
+62974 jogador_escolhido
+Novo jogador encontrado na posicao: zag
+91708 jogador_escolhido
+Novo jogador encontrado na posicao: zag
+37646 jogador_escolhido
+Comecando posicao: lat
+3 contador
+[8.74, 12.77, 12.28, 9.71, 5.83, 12.0, 13.95, 2.78, 11.24, 7.0, 6.38, 5.83, 9.64, 9.85, 7.35, 1.67, 12.49, 4.0, 9.0, 9.3, 4.93, 11.86, 5.0, 7.28, 3.61, 0.69, 7.77, 6.52, 4.0, 4.0, 5.9, 5.0, 6.8, 6.0, 4.72, 2.01] valores_escolhas
+Novo jogador encontrado na posicao: lat
+82628 jogador_escolhido
+Novo jogador encontrado na posicao: lat
+101803 jogador_escolhido
+Comecando posicao: mei
+4 contador
+[11.1, 10.96, 9.64, 8.05, 3.47, 4.86, 2.57, 2.64, 1.87, 3.47, 4.58, 3.05, 19.29, 14.36, 4.79, 8.05, 12.07, 7.35, 6.11, 6.11, 12.63, 4.23, 11.03, 2.43, 5.2, 5.48, 3.68, 7.98, 3.47, 9.0, 9.16, 15.54, 1.8, 11.59, 7.28, 5.76, 11.45, 15.54, 3.26, 4.51, 3.0, 4.37, 11.73, 6.17, 5.97, 7.08, 5.97, 6.73, 3.54, 4.86, 5.83, 6.52, 1.46, 4.44, 3.54, 10.96, 10.2, 3.33, 3.4, 3.0, 6.0, 4.79, 5.0, 4.93, 11.0, 9.0, 5.2, 12.63, 9.0, 3.54] valores_escolhas
+Novo jogador encontrado na posicao: mei
+100084 jogador_escolhido
+Novo jogador encontrado na posicao: mei
+84558 jogador_escolhido
+Novo jogador encontrado na posicao: mei
+82474 jogador_escolhido
+Comecando posicao: ata
+5 contador
+[18.94, 16.37, 18.04, 22.0, 21.51, 12.56, 8.74, 14.71, 8.26, 10.2, 2.36, 7.84, 17.83, 9.71, 13.39, 11.45, 8.74, 5.0, 18.52, 11.86, 3.75, 9.16, 8.39, 4.37, 3.26, 4.44, 2.91, 3.95, 12.49, 8.39, 8.95, 4.44, 3.54, 13.11, 13.0, 5.2, 4.23] valores_escolhas
+Novo jogador encontrado na posicao: ata
+68901 jogador_escolhido
+Novo jogador encontrado na posicao: ata
+91151 jogador_escolhido
+
+
+TIME MAIS BARATO CALCULADO PARA EPSILON
+Jogador: Marcelo Ribeiro Cabo(tec) -> 1.07 pontos; Custo: 2.13
+Jogador: Vladimir Orlando Cardoso de Araújo Filho(gol) -> -4.0 pontos; Custo: 0.69
+Jogador: Werley Ananias da Silva(zag) -> -4.4 pontos; Custo: 0.69
+Jogador: Marcílio Florêncio Mota Filho(zag) -> -1.0 pontos; Custo: 1.39
+Jogador: Ebert William Amâncio(zag) -> -1.5 pontos; Custo: 3.12
+Jogador: Guilherme de Jesus da Silva(lat) -> -2.3 pontos; Custo: 0.69
+Jogador: Carlos Augusto Zopalato Neves(lat) -> -1.6 pontos; Custo: 1.67
+Jogador: Igor Silveira Gomes(mei) -> 1.1 pontos; Custo: 1.46
+Jogador: Lucas Daniel Romero(mei) -> -2.4 pontos; Custo: 1.8
+Jogador: Geirton Marques Aires(mei) -> -0.3 pontos; Custo: 1.87
+Jogador: Rodrigo Pimpão Viana(ata) -> -1.6 pontos; Custo: 2.36
+Jogador: Everaldo Silva do Nascimento(ata) -> -2.8 pontos; Custo: 2.91
+LIMITE INFERIOR CALCULADO PARA O EPSILON: 20.78
