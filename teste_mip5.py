@@ -126,7 +126,7 @@ def run(perfis = [], q = [], rodadas = []):
             print("COMEÇOU O ESQUEMA TÁTICO: \n" + str(q_i))
             # Incrementa o limite_rodadas porque o Python não considera o valor limite no laço de repetição
             for rodada in range(1, limite_rodadas+1):
-
+                jogadores_ja_escolhidos = []
                 print("COMEÇOU A RODADA: \n" + str(rodada))
 
                 # Cartoletas iniciais
@@ -143,31 +143,46 @@ def run(perfis = [], q = [], rodadas = []):
                 time_mais_barato = []
                 contador = 0
                 
-                for i in q_i:
+                #q_i = [1,1,3,2,3,2]
+                for i in range(len(q_i)):
+                    print("Comecando posicao: " + q_nome_posicao[i])
+                    print(contador, "contador")
+
+                    jogadores_posicao, valores_escolhas, _ = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, q_nome_posicao[i]))
                     
-                    print("Comecando posicao: " + q_nome_posicao[contador])
-                    escolha, valores_escolhas, _ = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, q_nome_posicao[contador]))
-                    escolha_mais_barato = heapq.nsmallest(i, valores_escolhas)[contador]
+                    escolhas_mais_barato = heapq.nsmallest(q_i[i], valores_escolhas)
+                    
+                    print(valores_escolhas, "valores_escolhas")
+
+                    for escolha in escolhas_mais_barato:
+                        print("Novo jogador encontrado posicao: " + q_nome_posicao[i])
+                        gama_estrutura.append(escolha)
+                        indice_escolha_mais_barato=indexOf(valores_escolhas, escolha)
+                        jogador_escolhido = jogadores_posicao[indice_escolha_mais_barato]
+                        if jogador_escolhido not in jogadores_ja_escolhidos:
+                            jogadores_ja_escolhidos.append(jogador_escolhido)
+                            time_mais_barato.append(jogador_escolhido)
+                            print(jogador_escolhido, "jogador_escolhido")
+                        
+                    #escolha_mais_barato = heapq.nsmallest(i, valores_escolhas)[contador]
                     
                     #escolha_mais_barato_sql = banco.BuscarJogadoresPorRodadaPrecoEScore(rodada=rodada,preco=escolha_mais_barato,score=0,posicao="tec")
-                    gama_estrutura.append(escolha)
-                    indice_escolha_mais_barato=indexOf(valores_escolhas,escolha_mais_barato)
-                    time_mais_barato.append(escolha[indice_escolha_mais_barato])
-                    print(escolha[indice_escolha_mais_barato],"escolha")
-                    contador+=1
-                    if contador == i:
-                        contador=0
-                
-
                     
-                
-
+                    #chegou_na_proxima_posicao = contador != q_i[i]
+                    ## if q_i[i+1] is not None:
+                    #try:
+                    #    if chegou_na_proxima_posicao:
+                    #        contador = q_i[i+1]
+                    #except IndexError:
+                    #    continue
+                    
+                    contador+=1
                 #print(time_mais_barato,"time mais baratos por posicao")
                 #print(goleiro_mais_barato_sql, "Goleiro mais barato")
                 # Colocar epsilon variando em "min(c) vezes"
                 # OBS: colocamos 12 porque agora tem o técnico tbm
-                soma_epsilons = tecnico_mais_barato + goleiro_mais_barato + zagueiro_mais_barato + lateral_mais_barato + meia_mais_barato + ataque_mais_barato
-                print(soma_epsilons)
+                #soma_epsilons = tecnico_mais_barato + goleiro_mais_barato + zagueiro_mais_barato + lateral_mais_barato + meia_mais_barato + ataque_mais_barato
+                #print(soma_epsilons)
                 sys.exit()
 
                 epsilon = soma_epsilons

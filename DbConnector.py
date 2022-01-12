@@ -3,7 +3,7 @@ from mysql.connector import Error
 
 class DbConnector:
     def __init__(self):
-        self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='admin')
+        self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='')
 
     def InsertBanco(self,linha):
         # Variáveis para preparar a inserção no banco
