@@ -50,6 +50,7 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     gama.append(ataques)
 
     #Variavel de dominio y
+    #y = [[m.add_var(name='y', var_type=BINARY) for j in range(len(J)) ] for i in range(len(P))]
     y = [[m.add_var(name='y', var_type=BINARY) for j in range(len(J)) ] for i in range(len(P))]
 
     # Restrição 3.6
@@ -104,8 +105,15 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
         
     #if status == OptimizationStatus.OPTIMAL or status == OptimizationStatus.FEASIBLE:print('solution:')
 
-
-    return m.objective_value
+    jogadores_escolhidos = []
+    for i in range(len(P)):
+        for j in range(len(J)):
+            if y[i][j].x >= 0.99:
+                # REVER AQUI (LEMBRAR DO Q_I)
+                id_jogador = J[j]
+                jogadores_escolhidos.append(banco.BuscarJogadorPorId(id_jogador))
+    print(jogadores_escolhidos, "jogadores_escolhidos")
+    return m.objective_value, jogadores_escolhidos
     
 def run(perfis = [], q = [], rodadas = []):
     C = 100
@@ -113,7 +121,7 @@ def run(perfis = [], q = [], rodadas = []):
     conjunto_solucoes = []
     #Deixando somente 1 perfil para teste
     perfis = [1]
-    limite_rodadas = 4
+    limite_rodadas = 1
     #[tecnico, goleiro, zagueiro, lateral, meia, ataque]
     q_nome_posicao = ["tec","gol","zag","lat","mei","ata"]
     q = [
