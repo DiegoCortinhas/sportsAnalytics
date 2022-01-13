@@ -3,6 +3,7 @@ from pprint import pprint
 from sys import stdout as out
 from operator import indexOf
 from mip import Model, xsum, maximize, minimize, BINARY, CBC
+from mip.constants import OptimizationStatus
 import DbConnector
 
 banco = DbConnector.DbConnector()
@@ -20,70 +21,57 @@ def FormatarJogadoresPorRodada(jogadores_por_rodada):
     return jogadores_resultado, custo_jogadores_resultado, score_jogadores_resultado
 
 
-def CalcularModelo(rodada, J, c, a, q_i, epsilon, gama_estrutura):
+def CalcularModelo(rodada, J, c, a, q_i, epsilon):
 
     m = Model("Modelo Montagem de Elenco", solver_name=CBC)
+    gama = []
     
-    #Array com ids das posições dos jogadores
-    P = ["tecnico", "goleiro", "zagueiro", "lateral", "meia", "atacante"]
+    #Array com ids das possíveis posições dos jogadores
+    #P = [0,0,0,0,0,0,0,0,0,0,0,0]
+    P = ["tec", "gol", "zag", "lat", "mei", "ata"]
 
-    #tecnico = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "tec")
-    ##valores_tecnico = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "tec")
-    #tecnico_mais_barato = heapq.nsmallest(1, tecnico(2))
-#
-    #goleiro = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "gol")
-    #goleiro_mais_barato = heapq.nsmallest(1, goleiro(2))
-#
-    #zagueiro = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "zag")
-    #zagueiro_mais_barato = heapq.nsmallest(1, zagueiro(2))
-    #
-    #lateral = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "lat")
-    #lateral_mais_barato = heapq.nsmallest(1, lateral(2))
-    #
-    #meia = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "mei")
-    #meia_mais_barato = heapq.nsmallest(1, meia(2))
-    #
-    #ataque = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "ata")
-    #ataque_mais_barato = heapq.nsmallest(1, ataque(2))
+    tecnicos = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "tec")
+    #valores_tecnico = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "tec")
+    gama.append(tecnicos)
 
-    #id de todos goleiros, id todos os jogadores de defesa
-    #quais jogadores podem jogar em cada posição destas
-    gama = [gama_estrutura[0], gama_estrutura[1], gama_estrutura[2], gama_estrutura[3], gama_estrutura[4], gama_estrutura[5]]
+    goleiros = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "gol")
+    gama.append(goleiros)
+
+    zagueiros = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "zag")
+    gama.append(zagueiros)
     
+    laterais = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "lat")
+    gama.append(laterais)
+    
+    meias = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "mei")
+    gama.append(meias)
+    
+    ataques = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "ata")
+    gama.append(ataques)
 
     #Variavel de dominio y
     y = [[m.add_var(name='y', var_type=BINARY) for j in range(len(J)) ] for i in range(len(P))]
 
-    #y = m.var_by_name('y')
-    # #Restricao 3.6
-    # for j in range(len(J)):
-    #     expr=0
-    #     for i in range(len(P)):
-    #         print(i,"i")
-    #         print(j,"j")
-    #         y_aux = y[i][j]
-    #         expr += y_aux
-    #     m.add_constr(expr<=1)
-
+    # Restrição 3.6
     for j in range(len(J)):
         m += xsum(y[i][j] for i in range(len(P))) <= 1
 
     #m += xsum([y[i][j] for i in range(len(P))] for j in range(len (J)) <= 1
-    print("fim da restricao 3.6")
+    #print("fim da restricao 3.6")
 
     #Restricao 3.5
-    expr = 0
     for i in range(len(P)):
+        #m += xsum(y[i][j] for j in range(len(gama[i]))) == q_i[i]
         m += xsum(y[i][j] for j in range(len(gama[i]))) == q_i[i]
 
-    print("fim da restricao 3.5")
+    #print("fim da restricao 3.5")
     #m += xsum([y[i][j] for i in range(len(P))] for j in range(len (J)) <= 1)
 
     #Restricao 3.3 (que "vira" a 3.2)
     for j in range(len(J)):
         m += xsum(c[j] * y[i][j] for i in range(len(P))) <= epsilon
 
-    print("fim da restricao 3.3")
+    #print("fim da restricao 3.3")
 
     #m.objective = minimize(expr)
 
@@ -92,21 +80,32 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon, gama_estrutura):
         somatorio_score = xsum(a[j] * y[i][j] for i in range(len(P)))
 
     m.objective = maximize(somatorio_score)
+    m.verbose = 0
     solucao = m.optimize()
-    sei_la = []
     #for j in range(len(J)):
     #    for i in range(len(P)):
     #        if y[i][j] == 1:
     #            sei_la.append(y[i][j])
     #sel = [i for i in range(len(y)) if y[i].x == 1]
 
-    if m.num_solutions:
-        out.write('objective_value: %g \n' % (m.objective_value))
+    #if m.num_solutions:
+    #    out.write('objective_value: %g \n' % (m.objective_value))
     #else:
     #    print("NÃO ACHOU SOLUÇÃO")
     #    sys.exit()
+
+    if solucao == OptimizationStatus.OPTIMAL:
+        print('optimal solution cost {} found'.format(m.objective_value))
+    
+    elif solucao == OptimizationStatus.FEASIBLE:
+        print('sol.cost {} found, best possible: {}'.format(m.objective_value, m.objective_bound))
+    elif solucao == OptimizationStatus.NO_SOLUTION_FOUND:
+        print('no feasible solution found, lower bound is: {}'.format(m.objective_bound))
+        
+    #if status == OptimizationStatus.OPTIMAL or status == OptimizationStatus.FEASIBLE:print('solution:')
+
+
     return m.objective_value
-    #return sei_la
     
 def run(perfis = [], q = [], rodadas = []):
     C = 100
@@ -114,7 +113,7 @@ def run(perfis = [], q = [], rodadas = []):
     conjunto_solucoes = []
     #Deixando somente 1 perfil para teste
     perfis = [1]
-    limite_rodadas = 5
+    limite_rodadas = 4
     #[tecnico, goleiro, zagueiro, lateral, meia, ataque]
     q_nome_posicao = ["tec","gol","zag","lat","mei","ata"]
     q = [
@@ -130,7 +129,6 @@ def run(perfis = [], q = [], rodadas = []):
                 jogadores_ja_escolhidos = []
                 print("COMEÇOU A RODADA: \n" + str(rodada))
 
-                gama_estrutura = []
                 time_mais_barato = []
                 contador = 0
                 
@@ -150,9 +148,10 @@ def run(perfis = [], q = [], rodadas = []):
                     #limite_inferior_epsilon = 0
                     for escolha in escolhas_mais_barato:
                         print("Novo jogador encontrado na posicao: " + q_nome_posicao[i])
-                        gama_estrutura.append(escolha)
+                        #gama_estrutura.append(escolha)
                         indice_escolha_mais_barato=indexOf(valores_escolhas, escolha)
                         jogador_escolhido = jogadores_posicao[indice_escolha_mais_barato]
+                        # Impede o jogador de ser escolhido duaas vezes em posições diferentes. (Exemplo do William Arão)
                         if jogador_escolhido not in jogadores_ja_escolhidos:
                             jogadores_ja_escolhidos.append(jogador_escolhido)
                             time_mais_barato.append(jogador_escolhido)
@@ -163,9 +162,10 @@ def run(perfis = [], q = [], rodadas = []):
                 print("\n\nTIME MAIS BARATO CALCULADO PARA EPSILON")
                 for jogador_id in time_mais_barato:
                     jogador = banco.BuscarJogadorPorId(jogador_id)
+                    #  Soma os custos para o cálculo do Limite inferior de Epsilon
                     limite_inferior_epsilon += jogador[3]
                     nome_jogador = str(jogador[0])
-                    id_jogador = str(jogador[1])
+                    #id_jogador = str(jogador[1])
                     posicao_jogador = str(jogador[2])
                     custo_jogador = str(jogador[3])
                     score_jogador = str(jogador[4])
@@ -173,7 +173,12 @@ def run(perfis = [], q = [], rodadas = []):
                     print("Jogador: " + nome_jogador + "(" + posicao_jogador + ") -> " + score_jogador + " pontos; Custo: " + custo_jogador )
 
                 print("LIMITE INFERIOR CALCULADO PARA O EPSILON: " + str(limite_inferior_epsilon))
-                sys.exit()
+
+                # Aqui vai carregar todos os jogadores disponíveis NAQUELA RODADA
+                jogadores_por_rodada = banco.BuscarTodosJogadoresPorRodada(rodada)
+                # Formata variáveis para entrada na função que calcula o modelo
+                J, c, a = FormatarJogadoresPorRodada(jogadores_por_rodada)
+                
                 epsilon = limite_inferior_epsilon
                 epsilons = []
                 while epsilon < C:
@@ -181,24 +186,23 @@ def run(perfis = [], q = [], rodadas = []):
                     if (epsilon + min(valores_escolhas)) > C:
                         epsilon = C
                     else:
-                        epsilon += min(valores_escolhas)
-                        
-                    epsilons.append(epsilon) 
-                    
-                # Aqui vai carregar todos os jogadores disponíveis NAQUELA RODADA
-                jogadores_por_rodada = banco.BuscarTodosJogadoresPorRodada(rodada)
-                # Formata variáveis para entrada na função que calcula o modelo
-                J, c, a = FormatarJogadoresPorRodada(jogadores_por_rodada)
-                for epsilon in epsilons:
-                    solucao_maior_score = CalcularModelo(rodada, J, c, a, q_i, epsilon, gama_estrutura)
-                    solucao_menor_custo = maximize()
-                    print(solucao_maior_score, "solucao")
-                    solucoes.append(solucao_maior_score)
-            conjunto_solucoes.append(solucoes)
+                        epsilon += min(valores_escolhas) 
+                    epsilons.append(epsilon)
 
-            print("COMEÇA PRINT SOLUÇÕES")
-            pprint(solucoes)
-            print("TERMINA PRINT SOLUÇÕES")
+                for epsilon in epsilons:
+                    solucao_maior_score = CalcularModelo(rodada, J, c, a, q_i, epsilon)
+                    #solucao_menor_custo = maximize()
+                    solucoes.append(solucao_maior_score)
+                    #print(solucao_maior_score, "solucao")
+                    print(epsilon, "epsilon\n")
+                    #epsilons.append(epsilon)
+            print("TERMINOU O CÁLCULO PARA A RODADA " + str(rodada))
+            #conjunto_solucoes.append(solucoes)
+            print(len(epsilons), "len(epsilons)")
+            print("############################################################################################\n\n")
+            #print("COMEÇA PRINT SOLUÇÕES")
+            #pprint(solucoes)
+            #print("TERMINA PRINT SOLUÇÕES")
             #print("COMEÇA PRINT EPSILONS")
             #pprint(epsilons)
             #print("TERMINA PRINT EPSILONS")
