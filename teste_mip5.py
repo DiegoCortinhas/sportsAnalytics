@@ -2,9 +2,11 @@ import sys, heapq
 from pprint import pprint
 from sys import stdout as out
 from operator import indexOf
+from unittest.mock import Mock
 from mip import Model, xsum, maximize, minimize, BINARY, CBC
 from mip.constants import OptimizationStatus
 import DbConnector
+from mockBase import MockBase
 
 banco = DbConnector.DbConnector()
 
@@ -22,67 +24,125 @@ def FormatarJogadoresPorRodada(jogadores_por_rodada):
 
 
 def CalcularModelo(rodada, J, c, a, q_i, epsilon):
-
+    q_nome_posicao = ["tec","gol","zag","lat","mei","ata"]
     m = Model("Modelo Montagem de Elenco", solver_name=CBC)
     gama = []
-    
+    mock_base = MockBase()
     #Array com ids das possíveis posições dos jogadores
     #P = [0,0,0,0,0,0,0,0,0,0,0,0]
-    P = ["tec", "gol", "zag", "lat", "mei", "ata"]
+    P = []
 
-    tecnicos = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "tec")
-    #valores_tecnico = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "tec")
+    contador = 0
+    
+    for q in q_i:
+        for i in range(q):
+            P.append(q_nome_posicao[contador])
+            escolha = banco.BuscarJogadoresPorRodadaEPosicao(rodada, q_nome_posicao[contador])
+            #gama.append(escolha)
+        contador+=1
+
+    #tecnicos = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "tec")
+    tecnicos = mock_base[0]
     gama.append(tecnicos)
 
-    goleiros = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "gol")
+    #goleiros = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "gol")
+    goleiros = mock_base[1]
     gama.append(goleiros)
 
-    zagueiros = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "zag")
+    #zagueiros = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "zag")
+    zagueiros = mock_base[2]
+    gama.append(zagueiros)
+    gama.append(zagueiros)
     gama.append(zagueiros)
     
-    laterais = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "lat")
+    #laterais = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "lat")
+    laterais = mock_base[3]
+    gama.append(laterais)
     gama.append(laterais)
     
-    meias = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "mei")
+    #meias = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "mei")
+    meias = mock_base[4]
     gama.append(meias)
+    gama.append(meias)
+    gama.append(meias)
+    #gama.append(meias)
     
-    ataques = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "ata")
+    #ataques = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "ata")
+    ataques = mock_base[5]
+    gama.append(ataques)
     gama.append(ataques)
 
     #Variavel de dominio y
     #y = [[m.add_var(name='y', var_type=BINARY) for j in range(len(J)) ] for i in range(len(P))]
-    y = [[m.add_var(name='y', var_type=BINARY) for j in range(len(J)) ] for i in range(len(P))]
+    y = [[m.add_var(name='y', var_type=BINARY) for j in range(len(gama[i])) ] for i in range(len(P))]
 
     # Restrição 3.6
-    for j in range(len(J)):
-        m += xsum(y[i][j] for i in range(len(P))) <= 1
+    for i in range(len(P)):
+        m += xsum(y[i][j] for j in range(len(gama[i]))) <= 1
+    #m += xsum(y[0][j] for j in range(len(gama[0]))) <= 1
+    #m += xsum(y[1][j] for j in range(len(gama[1]))) <= 1
+    #m += xsum(y[2][j] for j in range(len(gama[2]))) <= 1
+    #m += xsum(y[3][j] for j in range(len(gama[3]))) <= 1
+    #m += xsum(y[4][j] for j in range(len(gama[4]))) <= 1
+    #m += xsum(y[5][j] for j in range(len(gama[5]))) <= 1
+    #m += xsum(y[6][j] for j in range(len(gama[6]))) <= 1
+    #m += xsum(y[7][j] for j in range(len(gama[7]))) <= 1
+    #m += xsum(y[8][j] for j in range(len(gama[8]))) <= 1
+    #m += xsum(y[9][j] for j in range(len(gama[9]))) <= 1
+    #m += xsum(y[10][j] for j in range(len(gama[10]))) <= 1
+    #m += xsum(y[11][j] for j in range(len(gama[11]))) <= 1
 
     #m += xsum([y[i][j] for i in range(len(P))] for j in range(len (J)) <= 1
     #print("fim da restricao 3.6")
 
     #Restricao 3.5
     for i in range(len(P)):
-        #m += xsum(y[i][j] for j in range(len(gama[i]))) == q_i[i]
-        m += xsum(y[i][j] for j in range(len(gama[i]))) == q_i[i]
+        m += xsum(y[i][j] for j in range(len(gama[i]))) == 1
+    
+    #m += xsum(y[0][j] for j in range(len(gama[0]))) == 1
+    #m += xsum(y[1][j] for j in range(len(gama[1]))) == 1
+    #m += xsum(y[2][j] for j in range(len(gama[2]))) == 1
+    #m += xsum(y[3][j] for j in range(len(gama[3]))) == 1
+    #m += xsum(y[4][j] for j in range(len(gama[4]))) == 1
+    #m += xsum(y[5][j] for j in range(len(gama[5]))) == 1
+    #m += xsum(y[6][j] for j in range(len(gama[6]))) == 1
+    #m += xsum(y[7][j] for j in range(len(gama[7]))) == 1
+    #m += xsum(y[8][j] for j in range(len(gama[8]))) == 1
+    #m += xsum(y[9][j] for j in range(len(gama[9]))) == 1
+    #m += xsum(y[10][j] for j in range(len(gama[10]))) == 1
+    #m += xsum(y[11][j] for j in range(len(gama[11]))) == 1
+    
+    #m.add_constr(xsum(y[5][j] for j in range(len(gama[5]))) == 1)
 
     #print("fim da restricao 3.5")
     #m += xsum([y[i][j] for i in range(len(P))] for j in range(len (J)) <= 1)
-
+    
     #Restricao 3.3 (que "vira" a 3.2)
-    for j in range(len(J)):
-        m += xsum(c[j] * y[i][j] for i in range(len(P))) <= epsilon
+    for i in range(len(P)):
+        #m += xsum(c[j] * y[i][j] for j in range(len(gama[i]))) <= epsilon
+        #m += xsum(c[j] * y[i][j] for j in range(len(gama[i]))) <= 1000
+        
+        #m += xsum(float(gama[i][j][2]) * y[i][j] for j in range(len(gama[i]))) <= 1000
+        m += xsum(float(gama[i][j][2]) * y[i][j] for j in range(len(gama[i]))) <= 1000
 
     #print("fim da restricao 3.3")
 
     #m.objective = minimize(expr)
 
     #Função Objetivo 3.1
-    for j in range(len(J)):
-        somatorio_score = xsum(a[j] * y[i][j] for i in range(len(P)))
-
+    for i in range(len(P)):
+        #somatorio_score = xsum(a[j] * y[i][j] for j in range(len(gama[i])))
+        somatorio_score = xsum(float(gama[i][j][3]) * y[i][j] for j in range(len(gama[i])))
+    
     m.objective = maximize(somatorio_score)
     m.verbose = 0
     solucao = m.optimize()
+
+    for i in range(len(y)):
+        for j in range(len(y[i])): 
+            print(y[i][j].x)
+            print("y[" + str(i) + "][" + str(j) + "].x")
+
     #for j in range(len(J)):
     #    for i in range(len(P)):
     #        if y[i][j] == 1:
@@ -106,13 +166,22 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     #if status == OptimizationStatus.OPTIMAL or status == OptimizationStatus.FEASIBLE:print('solution:')
 
     jogadores_escolhidos = []
+    print(P, "P")
     for i in range(len(P)):
-        for j in range(len(J)):
+        #print(gama[i])
+        #print("gama[" + str(i) + "]")
+        # q_i = [1,1,3,2,2]
+        for j in range(len(gama[i])):
+            #print(j, "j")
+            #print(q_i[i])
+            #print("q_i[" + str(i) + "]")
             if y[i][j].x >= 0.99:
                 # REVER AQUI (LEMBRAR DO Q_I)
-                id_jogador = J[j]
+                #id_jogador = J[j]
+                id_jogador = gama[i][j][1]
                 jogadores_escolhidos.append(banco.BuscarJogadorPorId(id_jogador))
     print(jogadores_escolhidos, "jogadores_escolhidos")
+    #print(len(jogadores_escolhidos), "len(jogadores_escolhidos)")
     return m.objective_value, jogadores_escolhidos
     
 def run(perfis = [], q = [], rodadas = []):

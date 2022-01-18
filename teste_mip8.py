@@ -98,7 +98,8 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     #Restricao 3.3 (que "vira" a 3.2)
     for q in q_i:
         for i in range(q): 
-            m += xsum(c[j] * y[i][j] for j in range(len(gama[i]))) <= epsilon
+            #m += xsum(c[j] * y[i][j] for j in range(len(gama[i]))) <= epsilon
+            m += xsum(c[j] * y[i][j] for j in range(len(gama[i]))) <= 1000
 
     #print("fim da restricao 3.3")
 
@@ -113,7 +114,7 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     #    somatorio_score = xsum(a[j] * y[i][j] for i in range(len(q_i)))
 
     m.objective = maximize(somatorio_score)
-    m.verbose = 0
+    m.verbose = 1
     solucao = m.optimize()
     #for j in range(len(J)):
     #    for i in range(len(P)):
@@ -140,17 +141,17 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     jogadores_escolhidos = []
     contador = 0
      
-    for q in q_i:
-        for i in range(q):
-            for j in range(len(gama[i])):
-                #print(y[i][j].x)
-            
-                if y[i][j].x >= 0.99:
-                #Para pegar o id do Jogador na Tupla de Atributos de Jogador
-                    id_jogador = J[j]
-                    jogadores_escolhidos.append(banco.BuscarJogadorPorId(id_jogador))
-                
-    print(jogadores_escolhidos, "jogadores_escolhidos")
+    #for q in q_i:
+    #    for i in range(q):
+    #        for j in range(len(gama[i])):
+    #            #print(y[i][j].x)
+    #        
+    #            if y[i][j].x >= 0.99:
+    #            #Para pegar o id do Jogador na Tupla de Atributos de Jogador
+    #                id_jogador = J[j]
+    #                jogadores_escolhidos.append(banco.BuscarJogadorPorId(id_jogador))
+    #            
+    #print(jogadores_escolhidos, "jogadores_escolhidos")
     return m.objective_value, jogadores_escolhidos
     
 def run(perfis = [], q = [], rodadas = []):
@@ -159,7 +160,7 @@ def run(perfis = [], q = [], rodadas = []):
     conjunto_solucoes = []
     #Deixando somente 1 perfil para teste
     perfis = [1]
-    limite_rodadas = 2
+    limite_rodadas = 1
     #[tecnico, goleiro, zagueiro, lateral, meia, ataque]
     q_nome_posicao = ["tec","gol","zag","lat","mei","ata"]
     q = [
