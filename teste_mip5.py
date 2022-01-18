@@ -29,48 +29,43 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     gama = []
     mock_base = MockBase()
     #Array com ids das possíveis posições dos jogadores
-    #P = [0,0,0,0,0,0,0,0,0,0,0,0]
-    P = []
+    P = ["tec", "gol", "zag", "lat", "mei", "ata"]
+    #P = []
 
     contador = 0
     
-    for q in q_i:
-        for i in range(q):
-            P.append(q_nome_posicao[contador])
-            escolha = banco.BuscarJogadoresPorRodadaEPosicao(rodada, q_nome_posicao[contador])
-            #gama.append(escolha)
-        contador+=1
+    #for q in q_i:
+    #    for i in range(q):
+    #        P.append(q_nome_posicao[contador])
+    #        escolha = banco.BuscarJogadoresPorRodadaEPosicao(rodada, q_nome_posicao[contador])
+    #        #gama.append(escolha)
+    #    contador+=1
 
-    #tecnicos = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "tec")
-    tecnicos = mock_base[0]
+    tecnicos = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "tec")
+    #tecnicos = mock_base[0]
     gama.append(tecnicos)
 
-    #goleiros = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "gol")
-    goleiros = mock_base[1]
+    goleiros = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "gol")
+    #goleiros = mock_base[1]
     gama.append(goleiros)
 
-    #zagueiros = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "zag")
-    zagueiros = mock_base[2]
-    gama.append(zagueiros)
-    gama.append(zagueiros)
+    zagueiros = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "zag")
+    #zagueiros = mock_base[2]
     gama.append(zagueiros)
     
-    #laterais = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "lat")
-    laterais = mock_base[3]
-    gama.append(laterais)
+    laterais = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "lat")
+    #laterais = mock_base[3]
     gama.append(laterais)
     
-    #meias = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "mei")
-    meias = mock_base[4]
+    meias = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "mei")
+    #meias = mock_base[4]
     gama.append(meias)
-    gama.append(meias)
-    gama.append(meias)
-    #gama.append(meias)
     
-    #ataques = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "ata")
-    ataques = mock_base[5]
+    ataques = banco.BuscarJogadoresPorRodadaEPosicao(rodada, "ata")
+    #ataques = mock_base[5]
     gama.append(ataques)
-    gama.append(ataques)
+    
+    #q_i = [1,1,2,1,1,1]
 
     #Variavel de dominio y
     #y = [[m.add_var(name='y', var_type=BINARY) for j in range(len(J)) ] for i in range(len(P))]
@@ -78,7 +73,7 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
 
     # Restrição 3.6
     for i in range(len(P)):
-        m += xsum(y[i][j] for j in range(len(gama[i]))) <= 1
+        m += xsum(y[i][j] for j in range(len(gama[i]))) <= q_i[i]
     #m += xsum(y[0][j] for j in range(len(gama[0]))) <= 1
     #m += xsum(y[1][j] for j in range(len(gama[1]))) <= 1
     #m += xsum(y[2][j] for j in range(len(gama[2]))) <= 1
@@ -95,9 +90,10 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     #m += xsum([y[i][j] for i in range(len(P))] for j in range(len (J)) <= 1
     #print("fim da restricao 3.6")
 
+    
     #Restricao 3.5
     for i in range(len(P)):
-        m += xsum(y[i][j] for j in range(len(gama[i]))) == 1
+        m += xsum(y[i][j] for j in range(len(gama[i]))) == q_i[i]
     
     #m += xsum(y[0][j] for j in range(len(gama[0]))) == 1
     #m += xsum(y[1][j] for j in range(len(gama[1]))) == 1
@@ -122,8 +118,8 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
         #m += xsum(c[j] * y[i][j] for j in range(len(gama[i]))) <= epsilon
         #m += xsum(c[j] * y[i][j] for j in range(len(gama[i]))) <= 1000
         
+        m += xsum(float(gama[i][j][2]) * y[i][j] for j in range(len(gama[i]))) <= epsilon
         #m += xsum(float(gama[i][j][2]) * y[i][j] for j in range(len(gama[i]))) <= 1000
-        m += xsum(float(gama[i][j][2]) * y[i][j] for j in range(len(gama[i]))) <= 1000
 
     #print("fim da restricao 3.3")
 
@@ -140,8 +136,10 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
 
     for i in range(len(y)):
         for j in range(len(y[i])): 
-            print(y[i][j].x)
-            print("y[" + str(i) + "][" + str(j) + "].x")
+            if y[i][j].x >= 0.99:
+                print("y[" + str(i) + "][" + str(j) + "].x = " + str(y[i][j].x) + " -> ESCOLHIDO PELO ALGORITMO")
+            else:
+                print("y[" + str(i) + "][" + str(j) + "].x = " + str(y[i][j].x))
 
     #for j in range(len(J)):
     #    for i in range(len(P)):
@@ -167,6 +165,7 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
 
     jogadores_escolhidos = []
     print(P, "P")
+    custo_jogadores_escolhidos = 0
     for i in range(len(P)):
         #print(gama[i])
         #print("gama[" + str(i) + "]")
@@ -179,10 +178,11 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
                 # REVER AQUI (LEMBRAR DO Q_I)
                 #id_jogador = J[j]
                 id_jogador = gama[i][j][1]
+                custo_jogadores_escolhidos += gama[i][j][2]
                 jogadores_escolhidos.append(banco.BuscarJogadorPorId(id_jogador))
     print(jogadores_escolhidos, "jogadores_escolhidos")
     #print(len(jogadores_escolhidos), "len(jogadores_escolhidos)")
-    return m.objective_value, jogadores_escolhidos
+    return m.objective_value, jogadores_escolhidos, custo_jogadores_escolhidos
     
 def run(perfis = [], q = [], rodadas = []):
     C = 100
@@ -194,7 +194,7 @@ def run(perfis = [], q = [], rodadas = []):
     #[tecnico, goleiro, zagueiro, lateral, meia, ataque]
     q_nome_posicao = ["tec","gol","zag","lat","mei","ata"]
     q = [
-        #[1,1,2,2,4,2],
+        [1,1,2,2,4,2],
         [1,1,3,2,3,2]
     ]
     for perfil in perfis:
@@ -205,6 +205,10 @@ def run(perfis = [], q = [], rodadas = []):
             for rodada in range(1, limite_rodadas+1):
                 jogadores_ja_escolhidos = []
                 print("COMEÇOU A RODADA: \n" + str(rodada))
+
+                # TODO: BUSCAR O NOVO CUSTO PARA A PRÓXIMA RODADA
+                #if rodada != 1:
+                #    C += custo_jogadores_escolhidos
 
                 time_mais_barato = []
                 contador = 0
@@ -266,14 +270,20 @@ def run(perfis = [], q = [], rodadas = []):
                         epsilon += min(valores_escolhas) 
                     epsilons.append(epsilon)
 
+                custo_jogadores_escolhidos = 0
                 for epsilon in epsilons:
-                    solucao_maior_score = CalcularModelo(rodada, J, c, a, q_i, epsilon)
+                    solucao_maior_score, jogadores_escolhidos, custo_jogadores_escolhidos = CalcularModelo(rodada, J, c, a, q_i, epsilon)
                     #solucao_menor_custo = maximize()
                     solucoes.append(solucao_maior_score)
                     #print(solucao_maior_score, "solucao")
                     print(epsilon, "epsilon\n")
                     #epsilons.append(epsilon)
-            print("TERMINOU O CÁLCULO PARA A RODADA " + str(rodada))
+                
+                # TODO: ATUALIZA A QUANTIDADE DE CARTOLETAS DISPONIVEL PARA A PRÓXIMA RODADA
+                #diferenca_cartoletas_custo = C - custo_jogadores_escolhidos
+                #print("Novo Valor de Cartoletas Calculado: " + str(C))
+
+            print("TERMINOU O CÁLCULO PARA A RODADA " + str(rodada) + " COM O ESQUEMA TÁTICO: " + str(q_i))
             #conjunto_solucoes.append(solucoes)
             print(len(epsilons), "len(epsilons)")
             print("############################################################################################\n\n")
