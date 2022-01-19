@@ -207,6 +207,7 @@ def run(perfis = [], q = [], rodadas = []):
             # Incrementa o limite_rodadas porque o Python não considera o valor limite no laço de repetição
             for rodada in range(1, limite_rodadas+1):
                 jogadores_ja_escolhidos = []
+                jogadores_ja_escolhidos_mais_caros = []
                 print("COMEÇOU A RODADA: \n" + str(rodada))
 
                 # TODO: BUSCAR O NOVO CUSTO PARA A PRÓXIMA RODADA
@@ -214,6 +215,7 @@ def run(perfis = [], q = [], rodadas = []):
                 #    C += custo_jogadores_escolhidos
 
                 time_mais_barato = []
+                time_mais_caro = []
                 contador = 0
                 
                 # Calcula o time mais barato possível na rodada
@@ -225,8 +227,21 @@ def run(perfis = [], q = [], rodadas = []):
                     jogadores_posicao, valores_escolhas, scores_escolhas = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, q_nome_posicao[i]))
                     
                     escolhas_mais_barato = heapq.nsmallest(q_i[i], valores_escolhas)
+                    escolhas_mais_caro = heapq.nlargest(q_i[i], valores_escolhas)
                     
                     print(valores_escolhas, "valores_escolhas")
+                    
+                    #Escolha dos jogadores mais caros
+                    for escolha in escolhas_mais_caro:
+                        print("Novo jogador mais caro encontrado na posicao: " + q_nome_posicao[i])
+                        indice_escolha_mais_caro=indexOf(valores_escolhas, escolha)
+                        jogador_escolhido = jogadores_posicao[indice_escolha_mais_caro]
+                        if jogador_escolhido not in jogadores_ja_escolhidos_mais_caros:
+                            jogadores_ja_escolhidos_mais_caros.append(jogador_escolhido)
+                            time_mais_caro.append(jogador_escolhido)
+                    #        limite_inferior_epsilon += valores_escolhas[indice_escolha_mais_barato]
+                            print(jogador_escolhido, "jogador_escolhido_mais_caro")
+
 
                     contador+=1
                     #limite_inferior_epsilon = 0
@@ -241,6 +256,7 @@ def run(perfis = [], q = [], rodadas = []):
                             time_mais_barato.append(jogador_escolhido)
                     #        limite_inferior_epsilon += valores_escolhas[indice_escolha_mais_barato]
                             print(jogador_escolhido, "jogador_escolhido")
+
 
                 limite_inferior_epsilon = 0
                 print("\n\nTIME MAIS BARATO CALCULADO PARA EPSILON")
