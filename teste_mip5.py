@@ -181,11 +181,13 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
                 custo_jogadores_escolhidos += gama[i][j][2]
                 jogadores_escolhidos.append(banco.BuscarJogadorPorId(id_jogador))
     print(jogadores_escolhidos, "jogadores_escolhidos")
+    print (custo_jogadores_escolhidos)
     #print(len(jogadores_escolhidos), "len(jogadores_escolhidos)")
     return m.objective_value, jogadores_escolhidos, custo_jogadores_escolhidos
     
 def run(perfis = [], q = [], rodadas = []):
-    C = 100
+    C = 100.0
+    
     solucoes = []
     conjunto_solucoes = []
     #Deixando somente 1 perfil para teste
@@ -194,13 +196,14 @@ def run(perfis = [], q = [], rodadas = []):
     #[tecnico, goleiro, zagueiro, lateral, meia, ataque]
     q_nome_posicao = ["tec","gol","zag","lat","mei","ata"]
     q = [
-        [1,1,2,2,4,2],
+        #[1,1,2,2,4,2],
         [1,1,3,2,3,2]
     ]
     for perfil in perfis:
         # q_i é o esquema tático
         for q_i in q:
             print("COMEÇOU O ESQUEMA TÁTICO: \n" + str(q_i))
+            print("Quantidade de Cartoletas disponiveis na rodada: " + str(C))
             # Incrementa o limite_rodadas porque o Python não considera o valor limite no laço de repetição
             for rodada in range(1, limite_rodadas+1):
                 jogadores_ja_escolhidos = []
@@ -270,16 +273,47 @@ def run(perfis = [], q = [], rodadas = []):
                         epsilon += min(valores_escolhas) 
                     epsilons.append(epsilon)
 
-                custo_jogadores_escolhidos = 0
+                custo_jogadores_escolhidos_rodada_atual = 0
+                #custo_jogadores_escolhidos_proxima_rodada = 0
                 for epsilon in epsilons:
-                    solucao_maior_score, jogadores_escolhidos, custo_jogadores_escolhidos = CalcularModelo(rodada, J, c, a, q_i, epsilon)
+                    solucao_maior_score, jogadores_escolhidos, custo_jogadores_escolhidos_rodada_atual = CalcularModelo(rodada, J, c, a, q_i, epsilon)
+                    #solucao_maior_score_2, jogadores_escolhidos, custo_jogadores_escolhidos_proxima_rodada = CalcularModelo(rodada+1, J, c, a, q_i, epsilon)
                     #solucao_menor_custo = maximize()
                     solucoes.append(solucao_maior_score)
+                    
                     #print(solucao_maior_score, "solucao")
                     print(epsilon, "epsilon\n")
                     #epsilons.append(epsilon)
-                
+
+                                
                 # TODO: ATUALIZA A QUANTIDADE DE CARTOLETAS DISPONIVEL PARA A PRÓXIMA RODADA
+                proxima_rodada = rodada + 1
+                jogadores_escolhidos_na_proxima_rodada = []
+                for i in jogadores_escolhidos:
+                    #print(i)
+                    #Busca o jogador que foi escolhido na rodada atual na rodada seguinte (para pegar o custo dele na prox rodada)
+                    jogador_escolhido_na_prox_rodada = banco.BuscarJogadorPorRodadaEId(proxima_rodada,i[1])
+                    #Se o jogador jogar a prox rodada pega o custo dele prox na rodada
+                    if jogador_escolhido_na_prox_rodada != None:
+                        jogadores_escolhidos_na_proxima_rodada.append(jogador_escolhido_na_prox_rodada)
+                    #Se o jogador não jogar a prox rodada pega o custo dele na rodada arual
+                    if jogador_escolhido_na_prox_rodada == None:
+                        jogadores_escolhidos_na_proxima_rodada.append(i)
+                    #print (jogador_escolhido_na_prox_rodada)
+                    #print("JOGADOR ESCOLHIDO NA PROXIMA RODADA")
+                
+                #Diminui o custo de escalar o time na rodada atual
+                C -= custo_jogadores_escolhidos_rodada_atual
+                print("Quantidade de cartoletas que sobraram na rodada atual: " + str(C))
+                print(jogadores_escolhidos_na_proxima_rodada)
+                print("Jogadores na lista de Escolhidos a somar no valor de C")
+                C_proxima_rodada = C
+                #Atualizar time com valores do time na segunda rodada
+                for i in jogadores_escolhidos_na_proxima_rodada:
+                    #print(i[3])
+                    C_proxima_rodada += float(i[3])
+                print("Quantidade de cartoletas para a proxima rodada: " + str(C_proxima_rodada) )
+
                 #diferenca_cartoletas_custo = C - custo_jogadores_escolhidos
                 #print("Novo Valor de Cartoletas Calculado: " + str(C))
 

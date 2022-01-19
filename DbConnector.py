@@ -3,7 +3,7 @@ from mysql.connector import Error
 
 class DbConnector:
     def __init__(self):
-        self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='')
+        self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='admin')
 
     def InsertBanco(self,linha):
         # Variáveis para preparar a inserção no banco
@@ -63,6 +63,15 @@ class DbConnector:
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_posicao_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num \
             FROM valorizacao where atletas_atleta_id = %s"
         
+        cursor.execute(sql, parametros)
+        resultado = cursor.fetchone()
+        return resultado
+    
+    def BuscarJogadorPorRodadaEId(self, rodada,jogador_id):
+        cursor = self.connection.cursor()
+        parametros = (str(rodada), str(jogador_id), )
+        sql = "SELECT atletas_nome, atletas_atleta_id, atletas_posicao_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num \
+            FROM valorizacao where atletas_rodada_id = %s AND atletas_status_id = 'Provável' AND  atletas_atleta_id = %s "
         cursor.execute(sql, parametros)
         resultado = cursor.fetchone()
         return resultado
