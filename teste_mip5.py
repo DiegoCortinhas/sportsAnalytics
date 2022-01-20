@@ -68,12 +68,33 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     #q_i = [1,1,2,1,1,1]
 
     #Variavel de dominio y
+    #y = [[m.add_var(name='y', var_type=BINARY) for i in range(len(P)) ] for j in range(len(J))]
     #y = [[m.add_var(name='y', var_type=BINARY) for j in range(len(J)) ] for i in range(len(P))]
     y = [[m.add_var(name='y', var_type=BINARY) for j in range(len(gama[i])) ] for i in range(len(P))]
 
+    """ inv_gama= [
+        [2,4],
+        ...,] """
+    
     # Restrição 3.6
+    #Nova maneira de escrever restricao 3.6
     for i in range(len(P)):
+        #m += xsum(y[i][j] for j in range(len(J))) <= 1
         m += xsum(y[i][j] for j in range(len(gama[i]))) <= q_i[i]
+    
+    #Maneira como o Pedro falou que não esta dando certo
+    """ for i in range(len(P)):
+        m += xsum(y[i][j] for j in range(len(J))) <= 1 """
+        
+    #Nova condição no modelo para não precisarmos usar o inverso de gama e garantirmos a escolha de 1 jogador apenas uma vez
+    """ objetivo = 0
+    for i in range(len(P)):
+        objetivo += xsum(y[i][j] for j in range(len(gama[i])))
+    m.add_constr(objetivo == 12)
+     """
+
+    """ for i in range(len(P)):
+        m += xsum(y[i][j] for j in range(len(gama[i]))) <= q_i[i] """
     #m += xsum(y[0][j] for j in range(len(gama[0]))) <= 1
     #m += xsum(y[1][j] for j in range(len(gama[1]))) <= 1
     #m += xsum(y[2][j] for j in range(len(gama[2]))) <= 1
@@ -93,6 +114,7 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     
     #Restricao 3.5
     for i in range(len(P)):
+        #m += xsum(y[i][j] for j in range(len(J))) == q_i[i]
         m += xsum(y[i][j] for j in range(len(gama[i]))) == q_i[i]
     
     #m += xsum(y[0][j] for j in range(len(gama[0]))) == 1
@@ -110,25 +132,23 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     
     #m.add_constr(xsum(y[5][j] for j in range(len(gama[5]))) == 1)
 
-    #print("fim da restricao 3.5")
-    #m += xsum([y[i][j] for i in range(len(P))] for j in range(len (J)) <= 1)
     
     #Restricao 3.3 (que "vira" a 3.2)
     for i in range(len(P)):
-        #m += xsum(c[j] * y[i][j] for j in range(len(gama[i]))) <= epsilon
-        #m += xsum(c[j] * y[i][j] for j in range(len(gama[i]))) <= 1000
-        
         m += xsum(float(gama[i][j][2]) * y[i][j] for j in range(len(gama[i]))) <= epsilon
+        #m += xsum(float(gama[i][j][2]) * y[i][j] for j in range(len(J))) <= epsilon
+        #m += xsum(c[j] * y[i][j] for j in range(len(J))) <= epsilon
+        #m += xsum(c[j] * y[i][j] for j in range(len(gama[i]))) <= 1000
         #m += xsum(float(gama[i][j][2]) * y[i][j] for j in range(len(gama[i]))) <= 1000
-
     #print("fim da restricao 3.3")
 
     #m.objective = minimize(expr)
 
     #Função Objetivo 3.1
     for i in range(len(P)):
-        #somatorio_score = xsum(a[j] * y[i][j] for j in range(len(gama[i])))
+        #somatorio_score = xsum(a[j] * y[i][j] for j in range(len(J)))
         somatorio_score = xsum(float(gama[i][j][3]) * y[i][j] for j in range(len(gama[i])))
+        #somatorio_score = xsum(float(gama[i][j][3]) * y[i][j] for j in range(len(J)))
     
     m.objective = maximize(somatorio_score)
     m.verbose = 0
