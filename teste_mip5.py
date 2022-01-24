@@ -90,10 +90,10 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     #    m += xsum(y[i][j] for j in range(len(J))) <= 1
         
     #Nova condição no modelo para não precisarmos usar o inverso de gama e garantirmos a escolha de 1 jogador apenas uma vez
-    """nova_condicao = 0
-    for i in range(len(P)):
-        nova_condicao += xsum(y[i][j] for j in range(len(J)))
-    m.add_constr(nova_condicao == 12)"""
+    nova_condicao = 0
+    #for i in range(len(P)):
+    m += xsum(y[i][j] for i in range(len (P)) for j in range(len(J))) == 12
+    #m.add_constr(nova_condicao == 12)
     
 
     """ for i in range(len(P)):
