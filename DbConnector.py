@@ -68,7 +68,7 @@ class DbConnector:
         return resultado
     
     def BuscarJogadorPorRodadaEId(self, rodada,jogador_id):
-        cursor = self.connection.cursor()
+        cursor = self.connection.cursor(buffered=True)
         parametros = (str(rodada), str(jogador_id), )
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_posicao_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num \
             FROM " + self.nome_tabela + " where atletas_rodada_id = %s AND (atletas_status_id = 'Provável' or atletas_status_id = 'Nulo') AND  atletas_atleta_id = %s "

@@ -35,9 +35,9 @@ def CalcularMediaScorePorRodadaEAno(ano_base_calculo, rodada, J):
         media_rodadas_anteriores = float(banco.CalcularMediaScorePorRodadaEAno(rodada, ano_base_calculo, J[i]))
         media_ano_anterior = float(banco.CalcularMediaScorePorRodadaEAno(None, ano_anterior, J[i]))
 
-        media = (media_rodadas_anteriores + media_ano_anterior) / qtd_rodadas
+        media = (media_rodadas_anteriores + media_ano_anterior) / 2
         jogador = banco.BuscarJogadorPorId(J[i])
-        #print("Jogador: " + str(jogador[0]))
+        #print("Jogador: " + str(jogador[0]) + " ID: " + str(jogador[1]))
         #print("Média 2018 Calculada: " + str(media_ano_anterior))
         #print("Média Rodadas Anteriores: " + str(media_rodadas_anteriores))
         #print("Média Total Calculada: " + str(media))
@@ -54,15 +54,11 @@ def CalcularTimeMaisBaratoDaRodada(rodada, q_i, q_nome_posicao):
     # Calcula o time mais barato possível na rodada
     #q_i = [1,1,3,2,3,2]
     for i in range(len(q_i)):
-        print("Comecando posicao: " + q_nome_posicao[i])
-        print(contador, "contador")
-
+        
         jogadores_posicao, valores_escolhas, scores_escolhas = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, q_nome_posicao[i]))
         
         escolhas_mais_barato = heapq.nsmallest(q_i[i], valores_escolhas)
         escolhas_mais_caro = heapq.nlargest(q_i[i], valores_escolhas)
-        
-        #print(valores_escolhas, "valores_escolhas")
         
         jogadores_ja_escolhidos_mais_caros = []
         #Escolha dos jogadores mais caros
@@ -210,6 +206,7 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     m.objective = maximize(somatorio_score)
     m.verbose = 0
     solucao = m.optimize()
+    m.write('model.lp')
 
 
     #for i in range(len(P)):
@@ -243,7 +240,7 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
                 id_jogador = J[j]
                 custo_jogadores_escolhidos += c[j]
                 jogadores_escolhidos.append(banco.BuscarJogadorPorId(id_jogador))
-    print(jogadores_escolhidos, "jogadores_escolhidos")
+    #print(jogadores_escolhidos, "jogadores_escolhidos")
     return m.objective_value, jogadores_escolhidos, custo_jogadores_escolhidos
     
 def run(perfis = [], q = [], rodadas = []):
@@ -253,7 +250,7 @@ def run(perfis = [], q = [], rodadas = []):
     conjunto_solucoes = []
     #Deixando somente 1 perfil para teste
     perfis = [1]
-    limite_rodadas = 1
+    limite_rodadas = 2
     #[tecnico, goleiro, zagueiro, lateral, meia, ataque]
     q_nome_posicao = ["tec","gol","zag","lat","mei","ata"]
     #P = ["ata", "gol", "lat", "mei", "tec", "zag"]
@@ -267,10 +264,10 @@ def run(perfis = [], q = [], rodadas = []):
         # q_i é o esquema tático
         for q_i in q:
             print("COMEÇOU O ESQUEMA TÁTICO: \n" + str(q_i))
-            print("Quantidade de Cartoletas disponiveis na rodada: " + str(C))
             # Incrementa o limite_rodadas porque o Python não considera o valor limite no laço de repetição
             for rodada in range(1, limite_rodadas+1):
                 print("COMEÇOU A RODADA: \n" + str(rodada))
+                print("Quantidade de Cartoletas disponiveis na rodada: " + str(C))
 
                 # TODO: BUSCAR O NOVO CUSTO PARA A PRÓXIMA RODADA
                 #if rodada != 1:
@@ -289,15 +286,15 @@ def run(perfis = [], q = [], rodadas = []):
                     custo_jogador = str(jogador[3])
                     score_jogador = str(jogador[4])
 
-                    print("Jogador: " + nome_jogador + "(" + posicao_jogador + ") -> " + score_jogador + " pontos; Custo: " + custo_jogador )
+                    #print("Jogador: " + nome_jogador + "(" + posicao_jogador + ") -> " + score_jogador + " pontos; Custo: " + custo_jogador )
 
                 print("LIMITE INFERIOR CALCULADO PARA O EPSILON: " + str(limite_inferior_epsilon))
 
                 # Aqui vai carregar todos os jogadores disponíveis NAQUELA RODADA
                 jogadores_por_rodada = banco.BuscarTodosJogadoresPorRodada(rodada)
                 # Formata variáveis para entrada na função que calcula o modelo
-                J, c, _ = FormatarJogadoresPorRodada(jogadores_por_rodada)
-                a = CalcularMediaScorePorRodadaEAno(2019, rodada, J)
+                J, c, a = FormatarJogadoresPorRodada(jogadores_por_rodada)
+                #a = CalcularMediaScorePorRodadaEAno(2019, rodada, J)
                 
                 epsilons = CalculaEpsilons(limite_inferior_epsilon, C, valores_escolhas)
 
@@ -316,11 +313,12 @@ def run(perfis = [], q = [], rodadas = []):
                     #print(i)
                     #Busca o jogador que foi escolhido na rodada atual na rodada seguinte (para pegar o custo dele na prox rodada)
                     jogador_escolhido_na_prox_rodada = banco.BuscarJogadorPorRodadaEId(proxima_rodada,i[1])
+                    #print(jogadores_escolhidos_na_proxima_rodada, "jogadores_escolhidos_na_proxima_rodada")
                     #Se o jogador jogar a prox rodada pega o custo dele prox na rodada
-                    if jogador_escolhido_na_prox_rodada != None:
+                    if jogador_escolhido_na_prox_rodada is not None:
                         jogadores_escolhidos_na_proxima_rodada.append(jogador_escolhido_na_prox_rodada)
                     #Se o jogador não jogar a prox rodada pega o custo dele na rodada arual
-                    if jogador_escolhido_na_prox_rodada == None:
+                    if jogador_escolhido_na_prox_rodada is None:
                         jogadores_escolhidos_na_proxima_rodada.append(i)
                     #print (jogador_escolhido_na_prox_rodada)
                     #print("JOGADOR ESCOLHIDO NA PROXIMA RODADA")
@@ -337,9 +335,9 @@ def run(perfis = [], q = [], rodadas = []):
                     C_proxima_rodada += float(i[3])
                 print("Quantidade de cartoletas para a proxima rodada: " + str(C_proxima_rodada) )
 
-                #diferenca_cartoletas_custo = C - custo_jogadores_escolhidos
-                #print("Novo Valor de Cartoletas Calculado: " + str(C))
-
+                # "Vende" o time e Atualiza o C para a próxima rodada
+                C = C_proxima_rodada
+                
             print("TERMINOU O CÁLCULO PARA A RODADA " + str(rodada) + " COM O ESQUEMA TÁTICO: " + str(q_i))
             print(len(epsilons), "len(epsilons)")
             print("############################################################################################\n\n")

@@ -6,8 +6,8 @@ class GithubConnector:
    def __init__(self):
       self.github_url_separator = "/"
       self.github_api_url = "https://api.github.com/repos/"
-      self.github_username = "henriquepgomide"
-      self.github_repository = "caRtola"
+      self.github_username = "DiegoCortinhas"
+      self.github_repository = "sportsAnalytics"
       self.github_contents_url = self.github_api_url + self.github_username + self.github_url_separator \
          + self.github_repository + self.github_url_separator + "contents" + self.github_url_separator
       # github_contents_url fica igual a: https://api.github.com/repos/henriquepgomide/caRtola/contents/data
