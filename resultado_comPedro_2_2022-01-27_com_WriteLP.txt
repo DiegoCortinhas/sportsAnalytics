@@ -1,0 +1,1014 @@
+COMEÇOU O ESQUEMA TÁTICO: 
+[2, 1, 2, 3, 1, 3]
+COMEÇOU A RODADA: 
+1
+Quantidade de Cartoletas disponiveis na rodada: 100.0
+Novo jogador mais caro encontrado na posicao: tec
+41929 jogador_escolhido_mais_caro
+Novo jogador mais caro encontrado na posicao: tec
+70696 jogador_escolhido_mais_caro
+Novo jogador encontrado na posicao: tec
+Novo jogador encontrado na posicao: tec
+Novo jogador mais caro encontrado na posicao: gol
+62121 jogador_escolhido_mais_caro
+Novo jogador encontrado na posicao: gol
+Novo jogador mais caro encontrado na posicao: zag
+80853 jogador_escolhido_mais_caro
+Novo jogador mais caro encontrado na posicao: zag
+87342 jogador_escolhido_mais_caro
+Novo jogador encontrado na posicao: zag
+Novo jogador encontrado na posicao: zag
+Novo jogador mais caro encontrado na posicao: lat
+63194 jogador_escolhido_mais_caro
+Novo jogador mais caro encontrado na posicao: lat
+80196 jogador_escolhido_mais_caro
+Novo jogador mais caro encontrado na posicao: lat
+68808 jogador_escolhido_mais_caro
+Novo jogador encontrado na posicao: lat
+Novo jogador encontrado na posicao: lat
+Novo jogador encontrado na posicao: lat
+Novo jogador mais caro encontrado na posicao: mei
+61033 jogador_escolhido_mais_caro
+Novo jogador encontrado na posicao: mei
+Novo jogador mais caro encontrado na posicao: ata
+84709 jogador_escolhido_mais_caro
+Novo jogador mais caro encontrado na posicao: ata
+90285 jogador_escolhido_mais_caro
+Novo jogador mais caro encontrado na posicao: ata
+38910 jogador_escolhido_mais_caro
+Novo jogador encontrado na posicao: ata
+Novo jogador encontrado na posicao: ata
+Novo jogador encontrado na posicao: ata
+
+
+TIME MAIS BARATO CALCULADO PARA EPSILON
+LIMITE INFERIOR CALCULADO PARA O EPSILON: 9.779999999999998
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 8.899999999999999 found
+10.469999999999997 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 8.899999999999999 found
+11.159999999999997 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 9.8 found
+11.849999999999996 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 10.399999999999999 found
+12.539999999999996 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 10.5 found
+13.229999999999995 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 12.899999999999999 found
+13.919999999999995 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 13.0 found
+14.609999999999994 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 13.6 found
+15.299999999999994 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 14.399999999999999 found
+15.989999999999993 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 15.4 found
+16.679999999999993 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 16.3 found
+17.369999999999994 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 17.0 found
+18.059999999999995 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 18.5 found
+18.749999999999996 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 18.5 found
+19.439999999999998 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 19.4 found
+20.13 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 19.4 found
+20.82 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 19.5 found
+21.51 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 21.9 found
+22.200000000000003 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 21.9 found
+22.890000000000004 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 22.8 found
+23.580000000000005 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 22.8 found
+24.270000000000007 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 23.700000000000003 found
+24.960000000000008 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 25.9 found
+25.65000000000001 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 25.9 found
+26.34000000000001 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 25.9 found
+27.030000000000012 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 25.9 found
+27.720000000000013 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 26.700000000000003 found
+28.410000000000014 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 28.200000000000003 found
+29.100000000000016 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 29.1 found
+29.790000000000017 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 29.1 found
+30.480000000000018 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 29.1 found
+31.17000000000002 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 31.1 found
+31.86000000000002 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 31.1 found
+32.55000000000002 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 31.1 found
+33.240000000000016 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+33.930000000000014 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+34.62000000000001 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+35.31000000000001 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+36.00000000000001 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+36.690000000000005 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+37.38 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+38.07 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+38.76 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+39.449999999999996 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+40.13999999999999 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+40.82999999999999 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+41.51999999999999 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+42.20999999999999 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+42.899999999999984 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+43.58999999999998 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+44.27999999999998 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+44.96999999999998 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+45.659999999999975 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+46.34999999999997 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+47.03999999999997 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+47.72999999999997 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+48.419999999999966 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+49.109999999999964 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+49.79999999999996 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+50.48999999999996 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+51.17999999999996 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+51.869999999999955 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+52.55999999999995 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+53.24999999999995 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+53.93999999999995 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+54.629999999999946 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+55.31999999999994 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+56.00999999999994 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+56.69999999999994 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+57.38999999999994 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+58.079999999999934 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+58.76999999999993 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+59.45999999999993 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+60.14999999999993 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+60.839999999999925 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+61.52999999999992 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+62.21999999999992 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+62.90999999999992 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+63.599999999999916 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+64.28999999999992 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+64.97999999999992 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+65.66999999999992 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+66.35999999999991 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+67.04999999999991 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+67.73999999999991 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+68.42999999999991 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+69.1199999999999 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+69.8099999999999 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+70.4999999999999 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+71.1899999999999 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+71.8799999999999 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+72.5699999999999 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+73.25999999999989 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+73.94999999999989 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+74.63999999999989 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+75.32999999999988 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+76.01999999999988 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+76.70999999999988 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+77.39999999999988 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+78.08999999999988 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+78.77999999999987 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+79.46999999999987 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+80.15999999999987 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+80.84999999999987 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+81.53999999999986 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+82.22999999999986 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+82.91999999999986 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
+optimal solution cost 32.0 found
+83.60999999999986 epsilon
+
+q_i[0]: 2
+q_i[1]: 1
+q_i[2]: 2
+q_i[3]: 3
+q_i[4]: 1
+q_i[5]: 3
