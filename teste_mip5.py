@@ -3,7 +3,7 @@ from pprint import pprint
 from sys import stdout as out
 from operator import indexOf
 from unittest.mock import Mock
-from mip import Model, xsum, maximize, minimize, BINARY, CBC
+from mip import Model, xsum, maximize, minimize, BINARY, CBC, MAXIMIZE
 from mip.constants import OptimizationStatus
 import DbConnector
 from mockBase import MockBase
@@ -35,7 +35,7 @@ def CalcularMediaScorePorRodadaEAno(ano_base_calculo, rodada, J):
         media_rodadas_anteriores = float(banco.CalcularMediaScorePorRodadaEAno(rodada, ano_base_calculo, J[i]))
         media_ano_anterior = float(banco.CalcularMediaScorePorRodadaEAno(None, ano_anterior, J[i]))
 
-        media = (media_rodadas_anteriores + media_ano_anterior) / 2
+        media = (media_rodadas_anteriores + media_ano_anterior) / (qtd_rodadas + 1)
         jogador = banco.BuscarJogadorPorId(J[i])
         #print("Jogador: " + str(jogador[0]) + " ID: " + str(jogador[1]))
         #print("Média 2018 Calculada: " + str(media_ano_anterior))
@@ -103,7 +103,7 @@ def CalculaEpsilons(limite_inferior_epsilon, C, valores_escolhas):
 
 def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     #q_i = [1,1,1,1,1,1]
-    m = Model("Modelo Montagem de Elenco", solver_name=CBC)
+    m = Model("Modelo Montagem de Elenco", solver_name=CBC, sense=MAXIMIZE)
     gama = []
     mock_base = MockBase()
     #Array com ids das possíveis posições dos jogadores
@@ -141,13 +141,15 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
 
     #Variavel de dominio y
     #y = [[m.add_var(name='y', var_type=BINARY) for i in range(len(P)) ] for j in range(len(J))]
-    y = [[m.add_var(name='y', var_type=BINARY) for j in range(len(J)) ] for i in range(len(P))]
+    #y = [[m.add_var(name='y', var_type=BINARY) for j in range(len(J)) ] for i in range(len(P))]
+    y = [[m.add_var(var_type=BINARY, name='y({},{})'.format(i, j)) for j in range(len(J))] for i in range(len(P))]
     #y = [[m.add_var(name='y', var_type=BINARY) for j in range(len(gama[i])) ] for i in range(len(P))]
 
     # Restrição 3.6
     #Nova maneira de escrever restricao 3.6
     for j in range(len(J)):
         m += xsum(y[i][j] for i in range(len(P))) <= 1.0
+        #, "Restricao 3.6"
         
     #Nova condição no modelo para não precisarmos usar o inverso de gama e garantirmos a escolha de 1 jogador apenas uma vez
     m += xsum(y[i][j] for i in range(len (P)) for j in range(len(J))) == 12
@@ -191,23 +193,25 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
         print("q_i[" + str(i) + "]: " + str(q_i[i]))
         gama_i = range(indice_primeiro_jogador_na_posicao_gama_i, indice_ultimo_jogador_na_posicao_gama_i + 1)
         m += xsum(y[i][j] for j in gama_i) == q_i[i]
+        #, format("Restricao 3.5 - %s", str(i))
         #m += xsum(y[i][j] for j in range(len(gama[i]))) == q_i[i]
     
     #Restricao 3.3 (que "vira" a 3.2)
     for i in range(len(P)):
         m += xsum(c[j] * y[i][j] for j in range(len(J))) <= epsilon
+        # , format("Restricao 3.3 - %s", str(i))
         
     #print("fim da restricao 3.3")
 
     #Função Objetivo 3.1
     for i in range(len(P)):
         somatorio_score = xsum(a[j] * y[i][j] for j in range(len(J)))
+        #, "Funcao Objetivo 3.1"
     
     m.objective = maximize(somatorio_score)
     m.verbose = 0
-    solucao = m.optimize()
     m.write('model.lp')
-
+    solucao = m.optimize()
 
     #for i in range(len(P)):
     #    for j in range(len(J)): 
@@ -250,7 +254,7 @@ def run(perfis = [], q = [], rodadas = []):
     conjunto_solucoes = []
     #Deixando somente 1 perfil para teste
     perfis = [1]
-    limite_rodadas = 2
+    limite_rodadas = 1
     #[tecnico, goleiro, zagueiro, lateral, meia, ataque]
     q_nome_posicao = ["tec","gol","zag","lat","mei","ata"]
     #P = ["ata", "gol", "lat", "mei", "tec", "zag"]
