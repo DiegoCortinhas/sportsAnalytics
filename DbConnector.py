@@ -3,9 +3,10 @@ from mysql.connector import Error
 
 class DbConnector:
     def __init__(self):
-        self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='')
+        self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='admin')
         #self.nome_tabela = "valorizacao_old"
         self.nome_tabela = "valorizacao_new"
+        self.ano_base = "2019"
 
     def InsertBanco(self,linha):
         # Variáveis para preparar a inserção no banco
@@ -32,7 +33,9 @@ class DbConnector:
         #sql = "SELECT atletas_nome, atletas_rodada_id, atletas_preco_num, atletas_variacao_num \
         #    FROM valorizacao where atletas_rodada_id = %s AND atletas_status_id = 'Provável'"
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num, atletas_posicao_id \
-            FROM " + self.nome_tabela + " where atletas_rodada_id = %s AND (atletas_status_id = 'Provável' or atletas_status_id = 'Nulo')"
+            FROM " + self.nome_tabela + " where atletas_rodada_id = %s AND (atletas_status_id = 'Provável' or atletas_status_id = 'Nulo') \
+                AND ANO = " + self.ano_base
+
 
         if posicao != "":
             sql += " AND atletas_posicao_id = %s"
@@ -49,7 +52,7 @@ class DbConnector:
         # Vamos deixar o "atletas_nome" por enquanto para facilitar o debug
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num \
             FROM " + self.nome_tabela + " where atletas_rodada_id = %s AND (atletas_status_id = 'Provável' or atletas_status_id = 'Nulo') \
-                group by atletas_atleta_id order by atletas_posicao_id, atletas_atleta_id;"
+                AND ANO = " + self.ano_base + " group by atletas_atleta_id order by atletas_posicao_id, atletas_atleta_id;"
         
         cursor.execute(sql, parametros)
         resultado = cursor.fetchall()
@@ -61,7 +64,7 @@ class DbConnector:
         parametros = (str(jogador_id), )
         # Vamos deixar o "atletas_nome" por enquanto para facilitar o debug
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_posicao_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num \
-            FROM " + self.nome_tabela + " where atletas_atleta_id = %s"
+            FROM " + self.nome_tabela + " where atletas_atleta_id = %s AND ANO = " + self.ano_base
         
         cursor.execute(sql, parametros)
         resultado = cursor.fetchone()
@@ -71,7 +74,8 @@ class DbConnector:
         cursor = self.connection.cursor(buffered=True)
         parametros = (str(rodada), str(jogador_id), )
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_posicao_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num \
-            FROM " + self.nome_tabela + " where atletas_rodada_id = %s AND (atletas_status_id = 'Provável' or atletas_status_id = 'Nulo') AND  atletas_atleta_id = %s "
+            FROM " + self.nome_tabela + " where atletas_rodada_id = %s AND (atletas_status_id = 'Provável' or atletas_status_id = 'Nulo') \
+                AND  atletas_atleta_id = %s AND ANO = " + self.ano_base
         cursor.execute(sql, parametros)
         resultado = cursor.fetchone()
         return resultado

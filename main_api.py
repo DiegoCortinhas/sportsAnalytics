@@ -6,7 +6,7 @@ import pandas as pd
 github = GithubConnector()
 csv_reader = CsvReader()
 
-years = [2014, 2015, 2016, 2017, 2018, 2019]
+years = [2018, 2019]
 
 dict_of_files = github.GetCsvRoundFilesUrlByYear(years)
 
