@@ -28,15 +28,33 @@ def CalcularMediaScorePorRodadaEAno(ano_base_calculo, rodada, J):
     ano_anterior = ano_base_calculo - 1
     qtd_rodadas = len(range(0, rodada))
     medias = []
+    rodada = 4
     #medias_rodadas_anteriores_mesmo_ano = banco.CalcularMediaScorePorRodadaEAno(rodada, ano_base_calculo, J)
     #medias_ano_anterior = banco.CalcularMediaScorePorRodadaEAno(None, ano_anterior, J)
     
     for i in range(len(J)):
         # Lembrar que medias_rodadas_anteriores[i] e medias_ano_anterior[i] retornam uma tupla (id_jogador, valor_media)
-        media_rodadas_anteriores = float(banco.CalcularMediaScorePorRodadaEAno(rodada, ano_base_calculo, J[i]))
-        media_ano_anterior = float(banco.CalcularMediaScorePorRodadaEAno(None, ano_anterior, J[i]))
+        media_rodadas_anteriores = banco.CalcularMediaScorePorRodadaEAno(rodada, ano_base_calculo, J[i])
+        media_ano_anterior = banco.CalcularMediaScorePorRodadaEAno(None, ano_anterior, J[i])[0][0]
+        #sys.exit()
+        media_rodada = 0
+        print(media_rodadas_anteriores, " Lista da Media das rodadas anteriores")
+        print(media_ano_anterior, " Media rodadas ano anterior")
 
-        media = (media_rodadas_anteriores + media_ano_anterior) / (qtd_rodadas + 1)
+        #media_rodadas_anteriores vem como lista de tuplas Exemplo: [('-1.6',)]
+        for j in media_rodadas_anteriores:
+            media_rodada += float(j[0])
+        
+        print(type(media_rodada))
+        print(type(media_ano_anterior))
+        print(type(qtd_rodadas))
+        
+        media = (media_rodada + float(media_ano_anterior)) / (qtd_rodadas + 1)
+       
+        print(J[i], " J")
+        print(media, " Media final")
+        sys.exit()
+
         jogador = banco.BuscarJogadorPorId(J[i])
        
         medias.append(media)
@@ -239,6 +257,7 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
                 jogadores_escolhidos.append(banco.BuscarJogadorPorRodadaEId(rodada,id_jogador))
     
     print(jogadores_escolhidos, "jogadores_escolhidos")
+    print(m.objective_value, " Scores dos times")
     return m.objective_value, jogadores_escolhidos, custo_jogadores_escolhidos
     
 def run(perfis = [], q = [], rodadas = []):
@@ -291,7 +310,7 @@ def run(perfis = [], q = [], rodadas = []):
                 jogadores_por_rodada = banco.BuscarTodosJogadoresPorRodada(rodada)
                 # Formata variáveis para entrada na função que calcula o modelo
                 J, c, a = FormatarJogadoresPorRodada(jogadores_por_rodada)
-                #a = CalcularMediaScorePorRodadaEAno(2019, rodada, J)
+                a = CalcularMediaScorePorRodadaEAno(2019, rodada, J)
                 
                 epsilons = CalculaEpsilons(limite_inferior_epsilon, C, valores_escolhas)
                 

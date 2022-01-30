@@ -91,25 +91,24 @@ class DbConnector:
 
         if rodada is not None:
             parametros = (str(ano), str(id_jogador), str(rodada), )
-            sql = "SELECT COALESCE(avg(atletas_pontos_num), 0) \
+            sql = "SELECT atletas_media_num \
                 FROM " + self.nome_tabela + " WHERE ANO=%s AND atletas_atleta_id = %s \
                 AND atletas_rodada_id between 1 and %s  \
-                AND (atletas_status_id = 'Provável' or atletas_status_id = 'Nulo') \
                 GROUP BY atletas_atleta_id ORDER BY atletas_atleta_id asc"
         else:
             parametros = (str(ano), str(id_jogador), )
-            sql = "SELECT COALESCE(avg(atletas_pontos_num), 0) \
+            sql = "SELECT atletas_media_num \
                 FROM " + self.nome_tabela + " WHERE ANO=%s AND atletas_atleta_id = %s \
-                AND (atletas_status_id = 'Provável' or atletas_status_id = 'Nulo') \
+                AND atletas_rodada_id = 38 \
                 GROUP BY atletas_atleta_id ORDER BY atletas_atleta_id asc"
 
 
         cursor.execute(sql, parametros)
         resultado = cursor.fetchall()
         #print(resultado, "resultado")
-
+       
+        
         if len(resultado) == 0:
             return 0
         else:
-            #Retorna o valor como número ao invés de tupla
-            return resultado[0][0]
+            return resultado
