@@ -5,7 +5,7 @@ class DbConnector:
     def __init__(self):
         self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='admin')
         #self.nome_tabela = "valorizacao_old"
-        self.nome_tabela = "valorizacao_new"
+        self.nome_tabela = "valorizacao_mock"
         self.ano_base = "2019"
 
     def InsertBanco(self,linha):
@@ -33,7 +33,7 @@ class DbConnector:
         #sql = "SELECT atletas_nome, atletas_rodada_id, atletas_preco_num, atletas_variacao_num \
         #    FROM valorizacao where atletas_rodada_id = %s AND atletas_status_id = 'Provável'"
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num, atletas_posicao_id \
-            FROM " + self.nome_tabela + " where atletas_rodada_id = %s AND (atletas_status_id = 'Provável' or atletas_status_id = 'Nulo') \
+            FROM " + self.nome_tabela + " where atletas_rodada_id = %s \
                 AND ANO = " + self.ano_base
 
 
@@ -51,7 +51,7 @@ class DbConnector:
         parametros = (str(rodada), )
         # Vamos deixar o "atletas_nome" por enquanto para facilitar o debug
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num \
-            FROM " + self.nome_tabela + " where atletas_rodada_id = %s AND (atletas_status_id = 'Provável' or atletas_status_id = 'Nulo') \
+            FROM " + self.nome_tabela + " where atletas_rodada_id = %s \
                 AND ANO = " + self.ano_base + " group by atletas_atleta_id order by atletas_posicao_id, atletas_atleta_id;"
         
         cursor.execute(sql, parametros)
@@ -74,7 +74,7 @@ class DbConnector:
         cursor = self.connection.cursor(buffered=True)
         parametros = (str(rodada), str(jogador_id), )
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_posicao_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num \
-            FROM " + self.nome_tabela + " where atletas_rodada_id = %s AND (atletas_status_id = 'Provável' or atletas_status_id = 'Nulo') \
+            FROM " + self.nome_tabela + " where atletas_rodada_id = %s \
                 AND  atletas_atleta_id = %s AND ANO = " + self.ano_base
         cursor.execute(sql, parametros)
         resultado = cursor.fetchone()
