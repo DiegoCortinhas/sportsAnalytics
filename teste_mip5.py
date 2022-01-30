@@ -195,9 +195,8 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
         #m += xsum(y[i][j] for j in range(len(gama[i]))) == q_i[i]
     
     #Restricao 3.3 (que "vira" a 3.2)
-    for i in range(len(P)):
-        nome_restricao = "restricao3.3_" + str(i)
-        m.add_constr(xsum(float(c[j]) * y[i][j] for j in range(len(J))) <= epsilon, name=nome_restricao)
+    #for i in range(len(P)):
+    m.add_constr(xsum(float(c[j]) * y[i][j] for j in range(len(J)) for i in range(len(P))) <= epsilon, name= "restricao3.3_" + str(i))
         # , format("Restricao 3.3 - %s", str(i))
         
     #print("fim da restricao 3.3")
@@ -213,12 +212,12 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     m.write('model.mps')
     solucao = m.optimize()
 
-    for i in range(len(P)):
-        for j in range(len(J)): 
-            if y[i][j].x >= 0.99:
-                print("y[" + str(i) + "][" + str(j) + "].x = " + str(y[i][j].x) + " -> ESCOLHIDO PELO ALGORITMO")
-            else:
-                print("y[" + str(i) + "][" + str(j) + "].x = " + str(y[i][j].x))
+    #for i in range(len(P)):
+    #    for j in range(len(J)): 
+    #        if y[i][j].x >= 0.99:
+    #            print("y[" + str(i) + "][" + str(j) + "].x = " + str(y[i][j].x) + " -> ESCOLHIDO PELO ALGORITMO")
+    #        else:
+    #            print("y[" + str(i) + "][" + str(j) + "].x = " + str(y[i][j].x))
 
     
     if solucao == OptimizationStatus.OPTIMAL:
@@ -239,10 +238,11 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
                 custo_jogadores_escolhidos += float(c[j])
                 jogadores_escolhidos.append(banco.BuscarJogadorPorRodadaEId(rodada,id_jogador))
     
+    print(jogadores_escolhidos, "jogadores_escolhidos")
     return m.objective_value, jogadores_escolhidos, custo_jogadores_escolhidos
     
 def run(perfis = [], q = [], rodadas = []):
-    C = 200.0
+    C = 200
     solucoes = []
     
     #Deixando somente 1 perfil para teste
