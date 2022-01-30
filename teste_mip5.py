@@ -103,7 +103,7 @@ def CalculaEpsilons(limite_inferior_epsilon, C, valores_escolhas):
 
 def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     #q_i = [1,1,1,1,1,1]
-    m = Model("Modelo Montagem de Elenco", solver_name=CBC, sense=MAXIMIZE)
+    m = Model("Modelo Montagem de Elenco", solver_name=CBC)
     gama = []
     mock_base = MockBase()
     #Array com ids das possíveis posições dos jogadores
@@ -148,11 +148,12 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     # Restrição 3.6
     #Nova maneira de escrever restricao 3.6
     for j in range(len(J)):
-        m += xsum(y[i][j] for i in range(len(P))) <= 1.0, "restricao36"
+        nome_restricao = "restricao3.6_" + str(j)
+        m.add_constr(xsum(y[i][j] for i in range(len(P))) <= 1.0, name=nome_restricao)
         #, "Restricao 3.6"
         
     #Nova condição no modelo para não precisarmos usar o inverso de gama e garantirmos a escolha de 1 jogador apenas uma vez
-    m += xsum(y[i][j] for i in range(len (P)) for j in range(len(J))) == 12
+    m.add_constr(xsum(y[i][j] for i in range(len (P)) for j in range(len(J))) == 12, name="restricao_12jogadores")
     #m.add_constr(nova_condicao == 12)
     
     #Restricao 3.5
@@ -188,33 +189,36 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
         
         #print("q_i[" + str(i) + "]: " + str(q_i[i]))
         gama_i = range(indice_primeiro_jogador_na_posicao_gama_i, indice_ultimo_jogador_na_posicao_gama_i + 1)
-        m += xsum(y[i][j] for j in gama_i) == q_i[i]
+        nome_restricao = "restricao3.5_" + str(i)
+        m.add_constr(xsum(y[i][j] for j in gama_i) == q_i[i], name=nome_restricao)
         #, format("Restricao 3.5 - %s", str(i))
         #m += xsum(y[i][j] for j in range(len(gama[i]))) == q_i[i]
     
     #Restricao 3.3 (que "vira" a 3.2)
     for i in range(len(P)):
-        m += xsum(float(c[j]) * y[i][j] for j in range(len(J))) <= epsilon
+        nome_restricao = "restricao3.3_" + str(i)
+        m.add_constr(xsum(float(c[j]) * y[i][j] for j in range(len(J))) <= epsilon, name=nome_restricao)
         # , format("Restricao 3.3 - %s", str(i))
         
     #print("fim da restricao 3.3")
 
     #Função Objetivo 3.1
-    for i in range(len(P)):
-        somatorio_score = xsum(float(a[j]) * y[i][j] for j in range(len(J)))
+    #for i in range(len(P)):
+    somatorio_score = xsum(float(a[j]) * y[i][j] for j in range(len(J)) for i in range(len(P)))
         #, "Funcao Objetivo 3.1"
     
     m.objective = maximize(somatorio_score)
     m.verbose = 0
     m.write('model.lp')
+    m.write('model.mps')
     solucao = m.optimize()
 
-    #for i in range(len(P)):
-    #    for j in range(len(J)): 
-    #        if y[i][j].x >= 0.99:
-    #            print("y[" + str(i) + "][" + str(j) + "].x = " + str(y[i][j].x) + " -> ESCOLHIDO PELO ALGORITMO")
-    #        else:
-    #            print("y[" + str(i) + "][" + str(j) + "].x = " + str(y[i][j].x))
+    for i in range(len(P)):
+        for j in range(len(J)): 
+            if y[i][j].x >= 0.99:
+                print("y[" + str(i) + "][" + str(j) + "].x = " + str(y[i][j].x) + " -> ESCOLHIDO PELO ALGORITMO")
+            else:
+                print("y[" + str(i) + "][" + str(j) + "].x = " + str(y[i][j].x))
 
     
     if solucao == OptimizationStatus.OPTIMAL:
