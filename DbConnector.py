@@ -3,7 +3,7 @@ from mysql.connector import Error
 
 class DbConnector:
     def __init__(self):
-        self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='admin')
+        self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='')
         #self.nome_tabela = "valorizacao_old"
         self.nome_tabela = "valorizacao_mock"
         self.ano_base = "2019"
@@ -82,25 +82,19 @@ class DbConnector:
 
     def CalcularMediaScorePorRodadaEAno(self, rodada, ano, id_jogador):
         cursor = self.connection.cursor()
-        #rodadas_formatado = ""
-        #rodadas = range(1,rodada)
-        #for r in rodadas:
-        #    rodadas_formatado += r + ","
-        #    
-        #rodadas_formatado = rodadas_formatado[0:-1]
-
+        
         if rodada is not None:
             parametros = (str(ano), str(id_jogador), str(rodada), )
             sql = "SELECT atletas_media_num \
                 FROM " + self.nome_tabela + " WHERE ANO=%s AND atletas_atleta_id = %s \
                 AND atletas_rodada_id between 1 and %s  \
-                GROUP BY atletas_atleta_id ORDER BY atletas_atleta_id asc"
+                ORDER BY atletas_atleta_id asc"
         else:
             parametros = (str(ano), str(id_jogador), )
             sql = "SELECT atletas_media_num \
                 FROM " + self.nome_tabela + " WHERE ANO=%s AND atletas_atleta_id = %s \
                 AND atletas_rodada_id = 38 \
-                GROUP BY atletas_atleta_id ORDER BY atletas_atleta_id asc"
+                ORDER BY atletas_atleta_id asc"
 
 
         cursor.execute(sql, parametros)
@@ -109,6 +103,35 @@ class DbConnector:
        
         
         if len(resultado) == 0:
-            return 0
+            return [(0,)]
         else:
             return resultado
+
+    def InserirMedia(self, id_jogador, rodada, media_rodadas_anteriores, media_total, ano_base_calculo):
+        cursor = self.connection.cursor()
+        
+        parametros = (str(id_jogador), str(rodada), str(media_rodadas_anteriores), str(media_total), str(ano_base_calculo))
+        
+        sql = "INSERT INTO valorizacao_medias_rodadas_anteriores(id_jogador, rodada_atual, media_rodadas_anteriores, media_total, ano) \
+                VALUES(%s, %s, %s, %s, %s)"
+        
+
+        cursor.execute(sql, parametros)
+        self.connection.commit()
+
+    def BuscarMediaJogadorPorRodadaEAno(self, id_jogador, rodada, ano):
+
+        cursor = self.connection.cursor()
+        parametros = (str(id_jogador), str(ano), str(rodada))
+
+        if rodada is not None:
+            sql = "SELECT media_rodadas_anteriores, media_total, ano FROM valorizacao_medias_rodadas_anteriores \
+                WHERE id_jogador = %s AND ano = %s AND rodada_atual = %s"
+        # Se nÃo receber a rodada, retorna toda a média de 2018 do jogador
+        else:
+            sql = "SELECT media_rodadas_anteriores, media_total, ano FROM valorizacao_medias_rodadas_anteriores \
+                WHERE id_jogador = %s AND ano = %s AND rodada_atual = 38"
+
+        cursor.execute(sql, parametros)
+        resultado = cursor.fetchall()
+        return resultado
