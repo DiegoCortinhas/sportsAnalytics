@@ -1,8 +1,9 @@
+import pandas as pd
+
 def FronteiraEficiente(data): 
+  data = pd.DataFrame(data, columns=['score','custo'])
 
   df_front = pd.DataFrame(columns=data.columns)
-
- 
 
   for i in range(0,data.shape[0]):
 
@@ -17,8 +18,6 @@ def FronteiraEficiente(data):
           flag = False
 
           break
-
-    
 
     if flag == True :
 

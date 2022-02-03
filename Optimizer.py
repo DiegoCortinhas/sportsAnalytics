@@ -8,6 +8,8 @@ from mip import Model, xsum, maximize, minimize, BINARY, CBC, MAXIMIZE
 from mip.constants import OptimizationStatus
 import DbConnector
 from mockBase import MockBase, MockJ
+from fronteiraEficiente import FronteiraEficiente
+from plotaFronteira import PlotaFronteira
 
 
 banco = DbConnector.DbConnector()
@@ -53,7 +55,7 @@ def CalcularMediaScorePorRodadaEAno(ano_base_calculo, rodada, J):
        
         print(J[i], " J")
         print(media, " Media final")
-        sys.exit()
+        #sys.exit()
 
         jogador = banco.BuscarJogadorPorId(J[i])
        
@@ -315,12 +317,22 @@ def run(perfis = [], q = [], rodadas = []):
                 epsilons = CalculaEpsilons(limite_inferior_epsilon, C, valores_escolhas)
                 
                 custo_jogadores_escolhidos_rodada_atual = 0
+                #solucoes_maior_score = []
+                #solucoes_menor_custo = []
                 for epsilon in epsilons:
-                    solucao_maior_score, jogadores_escolhidos, custo_jogadores_escolhidos_rodada_atual = CalcularModelo(rodada, J, c, a, q_i, epsilon)
-                    solucoes.append(solucao_maior_score)
-                    
-                    print(epsilon, "epsilon\n")
+                    solucao_maior_score, jogadores_escolhidos, solucao_menor_custo = CalcularModelo(rodada, J, c, a, q_i, epsilon)
+                    solucoes.append((solucao_maior_score,solucao_menor_custo))
+                    #solucoes_maior_score.append(solucao_maior_score)
+                    #solucoes_menor_custo.append(solucao_menor_custo)
 
+                    print(epsilon, "epsilon\n")
+                
+                solucao_eficiente = FronteiraEficiente(solucoes)
+                print(solucoes, " Soluções")
+                print(solucao_eficiente, " Soluções Eficientes")
+                PlotaFronteira(solucoes)
+
+                sys.exit()
                                 
                 # ATUALIZA A QUANTIDADE DE CARTOLETAS DISPONIVEL PARA A PRÓXIMA RODADA
                 proxima_rodada = rodada + 1
