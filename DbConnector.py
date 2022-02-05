@@ -4,21 +4,13 @@ from mysql.connector import Error
 class DbConnector:
     def __init__(self):
         self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='admin')
-        #self.nome_tabela = "valorizacao_old"
+        #self.nome_tabela = "valorizacao_new"
         self.nome_tabela = "valorizacao_mock"
         self.ano_base = "2019"
 
     def InsertBanco(self,linha):
         # Variáveis para preparar a inserção no banco
         cursor = self.connection.cursor()
-        '''
-        add_item = "insert into " + self.nome_tabela + " (local_id, atletas_nome, atletas_slug, atletas_apelido, atletas_foto, atletas_atleta_id,"\
-                   "atletas_rodada_id, atletas_clube_id, atletas_posicao_id, atletas_status_id, atletas_pontos_num,"\
-                   "atletas_preco_num, atletas_variacao_num, atletas_media_num, atletas_clube_id_full_name,"\
-                   "FS, RB, PE, FC, G, FF, FT, FD, DD, GS, SG, A, CA, I, CV, PP, GC, DP)"\
-                   "VALUES (%d,%s,%s,%s,%s,%d,%d,%d,%s,%s,%f,%f,%f,%f,%s,%d,%d,%d,%d,%d,%d,%d,%d,"\
-                   "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d)"
-        '''
         add_item = "insert into " + self.nome_tabela + " (local_id, atletas_nome, atletas_slug, atletas_apelido, atletas_foto, atletas_atleta_id," \
                    "atletas_rodada_id, atletas_clube_id, atletas_posicao_id, atletas_status_id, atletas_pontos_num," \
                    "atletas_preco_num, atletas_variacao_num, atletas_media_num, atletas_clube_id_full_name, ANO)" \
@@ -30,12 +22,9 @@ class DbConnector:
     def BuscarJogadoresPorRodadaEPosicao(self, rodada, posicao = ""):
         cursor = self.connection.cursor()
         parametros = (str(rodada), )
-        #sql = "SELECT atletas_nome, atletas_rodada_id, atletas_preco_num, atletas_variacao_num \
-        #    FROM valorizacao where atletas_rodada_id = %s AND atletas_status_id = 'Provável'"
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num, atletas_posicao_id \
             FROM " + self.nome_tabela + " where atletas_rodada_id = %s \
                 AND ANO = " + self.ano_base
-
 
         if posicao != "":
             sql += " AND atletas_posicao_id = %s"
@@ -49,10 +38,9 @@ class DbConnector:
     def BuscarTodosJogadoresPorRodada(self, rodada):
         cursor = self.connection.cursor()
         parametros = (str(rodada), )
-        # Vamos deixar o "atletas_nome" por enquanto para facilitar o debug
-        sql = "SELECT atletas_nome, atletas_atleta_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num \
+        sql = "SELECT atletas_nome, atletas_atleta_id, atletas_preco_num, atletas_media_num, atletas_variacao_num \
             FROM " + self.nome_tabela + " where atletas_rodada_id = %s \
-                AND ANO = " + self.ano_base + " group by atletas_atleta_id order by atletas_posicao_id, atletas_atleta_id;"
+                AND ANO = " + self.ano_base + " order by atletas_posicao_id, atletas_atleta_id;"
         
         cursor.execute(sql, parametros)
         resultado = cursor.fetchall()
@@ -62,8 +50,7 @@ class DbConnector:
     def BuscarJogadorPorId(self, jogador_id):
         cursor = self.connection.cursor(buffered=True)
         parametros = (str(jogador_id), )
-        # Vamos deixar o "atletas_nome" por enquanto para facilitar o debug
-        sql = "SELECT atletas_nome, atletas_atleta_id, atletas_posicao_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num \
+        sql = "SELECT atletas_nome, atletas_atleta_id, atletas_posicao_id, atletas_preco_num, atletas_media_num, atletas_variacao_num \
             FROM " + self.nome_tabela + " where atletas_atleta_id = %s AND ANO = " + self.ano_base
         
         cursor.execute(sql, parametros)
@@ -82,25 +69,21 @@ class DbConnector:
 
     def CalcularMediaScorePorRodadaEAno(self, rodada, ano, id_jogador):
         cursor = self.connection.cursor()
-        
         if rodada is not None:
             parametros = (str(ano), str(id_jogador), str(rodada), )
             sql = "SELECT atletas_media_num \
                 FROM " + self.nome_tabela + " WHERE ANO=%s AND atletas_atleta_id = %s \
-                AND atletas_rodada_id between 1 and %s  \
+                AND atletas_rodada_id between 1 and %s  AND atletas_pontos_num <> '0'\
                 ORDER BY atletas_atleta_id asc"
         else:
             parametros = (str(ano), str(id_jogador), )
             sql = "SELECT atletas_media_num \
                 FROM " + self.nome_tabela + " WHERE ANO=%s AND atletas_atleta_id = %s \
-                AND atletas_rodada_id = 38 \
+                AND atletas_rodada_id = 38 AND atletas_pontos_num <> '0'\
                 ORDER BY atletas_atleta_id asc"
-
 
         cursor.execute(sql, parametros)
         resultado = cursor.fetchall()
-        #print(resultado, "resultado")
-       
         
         if len(resultado) == 0:
             return [(0,)]
@@ -114,8 +97,6 @@ class DbConnector:
         
         sql = "INSERT INTO valorizacao_medias_rodadas_anteriores(id_jogador, rodada_atual, media_rodadas_anteriores, media_total, ano) \
                 VALUES(%s, %s, %s, %s, %s)"
-        
-
         cursor.execute(sql, parametros)
         self.connection.commit()
 
@@ -123,7 +104,6 @@ class DbConnector:
 
         cursor = self.connection.cursor()
         parametros = (str(id_jogador), str(ano), str(rodada))
-
         if rodada is not None:
             sql = "SELECT media_rodadas_anteriores, media_total, ano FROM valorizacao_medias_rodadas_anteriores \
                 WHERE id_jogador = %s AND ano = %s AND rodada_atual = %s"

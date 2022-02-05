@@ -23,8 +23,8 @@ def PlotaFronteira(data):
     #Array de X e Y
     datapoints=np.random.rand(2, 50)
     
-    print(datapoints," datapoints")
-    print(data, " data")
+    #print(datapoints," datapoints")
+    #print(data, " data")
     pareto=oapackage.ParetoDoubleLong()
 
     for ii in range(0, datapoints.shape[1]):
