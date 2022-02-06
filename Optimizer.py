@@ -19,22 +19,20 @@ def FormatarJogadoresPorRodada(jogadores_por_rodada):
     jogadores_resultado = []
     custo_jogadores_resultado = []
     score_jogadores_resultado = []
+    media_jogadores_resultado = []
 
     for jogador in jogadores_por_rodada:
         jogadores_resultado.append(jogador[1])
         custo_jogadores_resultado.append(jogador[2])
         score_jogadores_resultado.append(jogador[3])
+        media_jogadores_resultado.append(jogador[4])
 
-    return jogadores_resultado, custo_jogadores_resultado, score_jogadores_resultado
+    return jogadores_resultado, custo_jogadores_resultado, score_jogadores_resultado, media_jogadores_resultado
 
 def CalcularMediaScorePorRodadaEAno(ano_base_calculo, rodada, J):
     ano_anterior = ano_base_calculo - 1
     qtd_rodadas = len(range(0, rodada))
     medias = []
-    rodada = 4
-    #medias_rodadas_anteriores_mesmo_ano = banco.CalcularMediaScorePorRodadaEAno(rodada, ano_base_calculo, J)
-    #medias_ano_anterior = banco.CalcularMediaScorePorRodadaEAno(None, ano_anterior, J)
-    
     for i in range(len(J)):
         # Lembrar que medias_rodadas_anteriores[i] e medias_ano_anterior[i] retornam uma tupla (id_jogador, valor_media)
         media_rodadas_anteriores = banco.CalcularMediaScorePorRodadaEAno(rodada, ano_base_calculo, J[i])
@@ -58,7 +56,7 @@ def CalcularTimeMaisBaratoDaRodada(rodada, q_i, q_nome_posicao):
     #q_i = [1,1,3,2,3,2]
     for i in range(len(q_i)):
         
-        jogadores_posicao, valores_escolhas, scores_escolhas = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, q_nome_posicao[i]))
+        jogadores_posicao, valores_escolhas, _, medias_escolhas = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, q_nome_posicao[i]))
         
         escolhas_mais_barato = heapq.nsmallest(q_i[i], valores_escolhas)
         escolhas_mais_caro = heapq.nlargest(q_i[i], valores_escolhas)
@@ -196,10 +194,11 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
                 jogador_escolhido = banco.BuscarJogadorPorRodadaEId(rodada,id_jogador)
                 jogadores_escolhidos.append(jogador_escolhido)
     
-    df = pd.DataFrame(jogadores_escolhidos,columns=["Nome","Id","Posicao","Custo","Score","Variacao"])
+    df = pd.DataFrame(jogadores_escolhidos,columns=["Nome","Id","Posicao","Custo","Score","Media"])
     print(df)
 
     print(m.objective_value, " Scores dos times")
+    print(custo_jogadores_escolhidos, "Custo jogadores escolhidos")
     return m.objective_value, jogadores_escolhidos, custo_jogadores_escolhidos
     
 def run(perfis = [], q = [], rodadas = []):
@@ -208,7 +207,7 @@ def run(perfis = [], q = [], rodadas = []):
     
     #Deixando somente 1 perfil para teste
     perfis = [1]
-    limite_rodadas = 3
+    limite_rodadas = 1
     q_nome_posicao = ["ata","gol","lat","mei","tec","zag"]
     q = [
         # 4-4-2
@@ -247,7 +246,7 @@ def run(perfis = [], q = [], rodadas = []):
                 # Aqui vai carregar todos os jogadores disponíveis NAQUELA RODADA
                 jogadores_por_rodada = banco.BuscarTodosJogadoresPorRodada(rodada)
                 # Formata variáveis para entrada na função que calcula o modelo
-                J, c, a = FormatarJogadoresPorRodada(jogadores_por_rodada)
+                J, c, _, a = FormatarJogadoresPorRodada(jogadores_por_rodada)
                 
                 #Media na base é calculada somando os scores das rodadas jogadas e dividindo pelo numero de jogadas rodadas
                 #a = CalcularMediaScorePorRodadaEAno(2019, rodada, J)
@@ -258,7 +257,7 @@ def run(perfis = [], q = [], rodadas = []):
                 
                 for epsilon in epsilons:
                     solucao_maior_score, jogadores_escolhidos, custo_solucao = CalcularModelo(rodada, J, c, a, q_i, epsilon)
-                    solucoes.append((solucao_maior_score,custo_solucao))
+                    solucoes.append((solucao_maior_score,custo_solucao,rodada))
                     
                     print(epsilon, "epsilon\n")
                 

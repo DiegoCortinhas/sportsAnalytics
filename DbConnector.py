@@ -24,7 +24,7 @@ class DbConnector:
         parametros = (str(rodada), )
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num, atletas_posicao_id \
             FROM " + self.nome_tabela + " where atletas_rodada_id = %s \
-                AND ANO = " + self.ano_base
+                AND ANO = " + self.ano_base + " AND atletas_pontos_num <> '0'"
 
         if posicao != "":
             sql += " AND atletas_posicao_id = %s"
@@ -38,9 +38,9 @@ class DbConnector:
     def BuscarTodosJogadoresPorRodada(self, rodada):
         cursor = self.connection.cursor()
         parametros = (str(rodada), )
-        sql = "SELECT atletas_nome, atletas_atleta_id, atletas_preco_num, atletas_media_num, atletas_variacao_num \
+        sql = "SELECT atletas_nome, atletas_atleta_id, atletas_preco_num, atletas_pontos_num, atletas_media_num \
             FROM " + self.nome_tabela + " where atletas_rodada_id = %s \
-                AND ANO = " + self.ano_base + " order by atletas_posicao_id, atletas_atleta_id;"
+                AND ANO = " + self.ano_base + " AND atletas_pontos_num <> '0' order by atletas_posicao_id, atletas_atleta_id;"
         
         cursor.execute(sql, parametros)
         resultado = cursor.fetchall()
@@ -60,8 +60,8 @@ class DbConnector:
     def BuscarJogadorPorRodadaEId(self, rodada,jogador_id):
         cursor = self.connection.cursor(buffered=True)
         parametros = (str(rodada), str(jogador_id), )
-        sql = "SELECT atletas_nome, atletas_atleta_id, atletas_posicao_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num \
-            FROM " + self.nome_tabela + " where atletas_rodada_id = %s \
+        sql = "SELECT atletas_nome, atletas_atleta_id, atletas_posicao_id, atletas_preco_num, atletas_pontos_num, atletas_media_num \
+            FROM " + self.nome_tabela + " where atletas_rodada_id = %s AND atletas_pontos_num <> '0' \
                 AND  atletas_atleta_id = %s AND ANO = " + self.ano_base
         cursor.execute(sql, parametros)
         resultado = cursor.fetchone()

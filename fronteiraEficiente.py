@@ -1,7 +1,7 @@
 import pandas as pd
 
 def FronteiraEficiente(data): 
-  data = pd.DataFrame(data, columns=['score','custo'])
+  data = pd.DataFrame(data, columns=['score','custo','rodada'])
 
   df_front = pd.DataFrame(columns=data.columns)
 
