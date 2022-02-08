@@ -207,14 +207,14 @@ def run(perfis = [], q = [], rodadas = []):
     
     #Deixando somente 1 perfil para teste
     perfis = [1]
-    limite_rodadas = 25
+    limite_rodadas = 34
     q_nome_posicao = ["ata","gol","lat","mei","tec","zag"]
     q = [
         # 4-4-2
         #[2,1,2,4,1,2],
         # 3-5-2
     #P = ["ata", "gol", "lat", "mei", "tec", "zag"]
-        [2,1,2,3,1,3]
+        [2,1,2,4,1,2]
     ]
     for perfil in perfis:
         # q_i é o esquema tático
