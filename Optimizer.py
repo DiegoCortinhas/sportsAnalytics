@@ -207,7 +207,7 @@ def run(perfis = [], q = [], rodadas = []):
     
     #Deixando somente 1 perfil para teste
     perfis = [1]
-    limite_rodadas = 1
+    limite_rodadas = 25
     q_nome_posicao = ["ata","gol","lat","mei","tec","zag"]
     q = [
         # 4-4-2
