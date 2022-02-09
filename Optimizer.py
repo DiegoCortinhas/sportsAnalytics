@@ -221,8 +221,8 @@ def run(perfis = [], q = [], rodadas = []):
         for q_i in q:
             print("COMEÇOU O ESQUEMA TÁTICO: \n" + str(q_i))
             # Incrementa o limite_rodadas porque o Python não considera o valor limite no laço de repetição
-            for rodada in range(1, limite_rodadas+1):
-
+            #for rodada in range(1, limite_rodadas+1):
+            for rodada in [38]:
                 print("COMEÇOU A RODADA: \n" + str(rodada))
                 print("Quantidade de Cartoletas disponiveis na rodada: " + str(C))
 
