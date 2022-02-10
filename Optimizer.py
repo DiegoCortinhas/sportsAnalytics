@@ -202,12 +202,12 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     return m.objective_value, jogadores_escolhidos, custo_jogadores_escolhidos
     
 def run(perfis = [], q = [], rodadas = []):
-    C = 89.72999999999995
+    C = 200
     solucoes = []
     
     #Deixando somente 1 perfil para teste
     perfis = [1]
-    limite_rodadas = 3
+    limite_rodadas = 2
     q_nome_posicao = ["ata","gol","lat","mei","tec","zag"]
     q = [
         # 4-4-2
@@ -221,8 +221,8 @@ def run(perfis = [], q = [], rodadas = []):
         for q_i in q:
             print("COMEÇOU O ESQUEMA TÁTICO: \n" + str(q_i))
             # Incrementa o limite_rodadas porque o Python não considera o valor limite no laço de repetição
-            #for rodada in range(1, limite_rodadas+1):
-            for rodada in [8]:
+            for rodada in range(1, limite_rodadas+1):
+            #for rodada in [8]:
                 print("COMEÇOU A RODADA: \n" + str(rodada))
                 print("Quantidade de Cartoletas disponiveis na rodada: " + str(C))
 
