@@ -167,12 +167,12 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     m.write('model.mps')
     solucao = m.optimize()
 
-    #for i in range(len(P)):
-    #    for j in range(len(J)): 
-    #        if y[i][j].x >= 0.99:
-    #            print("y[" + str(i) + "][" + str(j) + "].x = " + str(y[i][j].x) + " -> ESCOLHIDO PELO ALGORITMO")
-    #        else:
-    #            print("y[" + str(i) + "][" + str(j) + "].x = " + str(y[i][j].x))
+    for i in range(len(P)):
+        for j in range(len(J)): 
+            if y[i][j].x >= 0.99:
+                print("y[" + str(i) + "][" + str(j) + "].x = " + str(y[i][j].x) + " -> ESCOLHIDO PELO ALGORITMO")
+            else:
+                print("y[" + str(i) + "][" + str(j) + "].x = " + str(y[i][j].x))
 
     if solucao == OptimizationStatus.OPTIMAL:
         print('optimal solution cost {} found'.format(m.objective_value))
@@ -202,19 +202,20 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     return m.objective_value, jogadores_escolhidos, custo_jogadores_escolhidos
     
 def run(perfis = [], q = [], rodadas = []):
-    C = 200
+    C = 100
     solucoes = []
     
     #Deixando somente 1 perfil para teste
     perfis = [1]
-    limite_rodadas = 2
+    limite_rodadas = 38
     q_nome_posicao = ["ata","gol","lat","mei","tec","zag"]
     q = [
         # 4-4-2
         #[2,1,2,4,1,2],
         # 3-5-2
     #P = ["ata", "gol", "lat", "mei", "tec", "zag"]
-        [2,1,2,4,1,2]
+        #[2,1,2,4,1,2]
+        [2,1,2,3,1,3]
     ]
     for perfil in perfis:
         # q_i é o esquema tático
@@ -222,7 +223,7 @@ def run(perfis = [], q = [], rodadas = []):
             print("COMEÇOU O ESQUEMA TÁTICO: \n" + str(q_i))
             # Incrementa o limite_rodadas porque o Python não considera o valor limite no laço de repetição
             for rodada in range(1, limite_rodadas+1):
-            #for rodada in [8]:
+            #for rodada in [34,35,36]:
                 print("COMEÇOU A RODADA: \n" + str(rodada))
                 print("Quantidade de Cartoletas disponiveis na rodada: " + str(C))
 
@@ -255,6 +256,9 @@ def run(perfis = [], q = [], rodadas = []):
                 
                 custo_jogadores_escolhidos_rodada_atual = 0.0
                 
+                if len(epsilons) == 0:
+                    continue
+
                 for epsilon in epsilons:
                     solucao_maior_score, jogadores_escolhidos, custo_solucao = CalcularModelo(rodada, J, c, a, q_i, epsilon)
                     solucoes.append((solucao_maior_score,custo_solucao,rodada))
