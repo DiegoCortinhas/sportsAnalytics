@@ -15,21 +15,22 @@ class SeletorDeSolucoes:
 
         if self.perfil == "prefere_mais_score":
             # Lembrar que as solucoes chegam como um Dataframe
-            for i in range(len(self.solucoes_eficiente)):
-                solucao_escolhida = self.solucoes_eficiente.iloc[-i]
-                custo_solucao_escolhida = solucao_escolhida.iloc[1]
-                if custo_solucao_escolhida < (self.C - 20):
-                    jogadores_solucao_escolhida = self.solucoes_jogadores[-i]
-                    break
-        
+            #for i in range(1, len(self.solucoes_eficiente) - 1):
+            #    solucao_escolhida = self.solucoes_eficiente.iloc[-i]
+            #    custo_solucao_escolhida = solucao_escolhida.iloc[1]
+            #    if custo_solucao_escolhida <= self.C:
+            #        jogadores_solucao_escolhida = self.solucoes_jogadores[-i]
+            #        break
+            solucao_escolhida = self.solucoes_eficiente.iloc[-1]
+            custo_solucao_escolhida = solucao_escolhida.iloc[1]
+            jogadores_solucao_escolhida = self.solucoes_jogadores[-1]
+
+
         elif self.perfil == "prefere_menos_preco":
-            for i in range(len(self.solucoes_eficiente)):
-                solucao_media = round(len(self.solucoes_eficiente) / 4)
-                solucao_escolhida = self.solucoes_eficiente.iloc[solucao_media]
-                custo_solucao_escolhida = solucao_escolhida.iloc[1]
-                if custo_solucao_escolhida < (self.C - 20):
-                    jogadores_solucao_escolhida = self.solucoes_jogadores[solucao_media - i]
-                    break
+            solucao_escolhida = self.solucoes_eficiente.iloc[0]
+            custo_solucao_escolhida = solucao_escolhida.iloc[1]
+            jogadores_solucao_escolhida = self.solucoes_jogadores[0]
+
 
         elif self.perfil == "balanceado":
             solucao_media_balanceada = round(len(self.solucoes_eficiente) / 2)

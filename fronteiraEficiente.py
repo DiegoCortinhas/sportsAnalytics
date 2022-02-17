@@ -8,7 +8,6 @@ class FronteiraEficiente:
   def CalcularFronteiraEficiente(self): 
 
     df_front = pd.DataFrame(columns=self.dataframe.columns)
-    jogadores_solucoes_eficiente = []
 
     for i in range(0,self.dataframe.shape[0]):
 
@@ -25,18 +24,14 @@ class FronteiraEficiente:
             break
 
       if flag == True :
-        limite_jogadores_escolhidos = len(self.jogadores_escolhidos)
-
-        indice_busca_jogadores = int(self.dataframe.iloc[i]['indice_jogadores'])
-        if indice_busca_jogadores < limite_jogadores_escolhidos:
-          jogadores_solucoes_eficiente.append(self.jogadores_escolhidos[indice_busca_jogadores])
-
+        
         df_front = df_front.append(self.dataframe.iloc[i])
 
     df_front = df_front.sort_values(by=['score', 'custo'])
+    jogadores_solucoes_eficiente = self.RetornaJogadoresSolucoesEficiente(df_front)
     return df_front, jogadores_solucoes_eficiente
 
-  def RetornaJogadoresSolucoesEficiente(self):
+  def RetornaJogadoresSolucoesEficiente(self, df_front):
     #print(self.jogadores_escolhidos, "\n(fronteiraEficiente.py) self.jogadores_escolhidos\n")
     #print(self.dataframe, "\n(fronteiraEficiente.py) self.dataframe\n")
     #print(len(self.jogadores_escolhidos), "\n(fronteiraEficiente.py) len(self.jogadores_escolhidos)\n")
@@ -44,9 +39,10 @@ class FronteiraEficiente:
     #print(self.dataframe.iloc[-1], "\n(fronteiraEficiente.py) self.dataframe.iloc[-1]\n")
     #print(self.jogadores_escolhidos[-1], "\n(fronteiraEficiente.py) self.jogadores_escolhidos[-1]\n")
 
-    #for index, row in self.dataframe.iterrows():
-    for i in range(len(self.dataframe)):
-      indice_busca_jogadores = int(self.dataframe.iloc[i]['indice_jogadores'])
+    jogadores_solucoes_eficiente = []
+    limite_jogadores_escolhidos = len(self.jogadores_escolhidos)
+    for i in range(len(df_front)):
+      indice_busca_jogadores = int(df_front.iloc[i]['indice_jogadores'])
       if indice_busca_jogadores < limite_jogadores_escolhidos:
         jogadores_solucoes_eficiente.append(self.jogadores_escolhidos[indice_busca_jogadores])
     return jogadores_solucoes_eficiente
