@@ -205,15 +205,16 @@ def run(perfis = [], q = [], rodadas = []):
         [3,1,2,3,1,2]
     ]
     for perfil in perfis:
-        C = 100
-        limite_rodadas = 2
+        #C = 100
+        C = 81.85999999999999
+        limite_rodadas = 38
         q_nome_posicao = ["ata","gol","lat","mei","tec","zag"]
         i_esquema_tatico = 0
         # q_i é o esquema tático
         for q_i in q:
             # Incrementa o limite_rodadas porque o Python não considera o valor limite no laço de repetição
-            for rodada in range(1, limite_rodadas+1):
-            #for rodada in [8]:
+            #for rodada in range(1, limite_rodadas+1):
+            for rodada in [4,5,6]:
                 print("\n\nCOMEÇOU A RODADA: " + str(rodada))
                 print("Perfil: " + perfil + "; Esquema Tático: " + q_legivel[i_esquema_tatico])
                 print("Quantidade de Cartoletas disponiveis na rodada: " + str(C))
@@ -261,7 +262,7 @@ def run(perfis = [], q = [], rodadas = []):
                 #jogadores_escolhidos_solucoes_eficiente = fronteira_eficiente.RetornaJogadoresSolucoesEficiente()
 
                 # Escolhe a solução para cada Perfil de Jogador Virtual
-                seletor_solucoes = SeletorDeSolucoes(perfil, jogadores_escolhidos_solucoes_eficiente, solucoes_eficiente)
+                seletor_solucoes = SeletorDeSolucoes(perfil, jogadores_escolhidos_solucoes_eficiente, solucoes_eficiente, C)
                 solucao_escolhida_pelo_perfil, jogadores_solucao_escolhida_pelo_perfil = seletor_solucoes.EscolherSolucao()
                 
                 custo_solucao_escolhida_pelo_perfil = float(solucao_escolhida_pelo_perfil.iloc[1])
