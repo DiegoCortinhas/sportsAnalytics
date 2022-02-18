@@ -204,17 +204,20 @@ def run(perfis = [], q = [], rodadas = []):
         [3,1,2,3,1,2]
     ]
     for perfil in perfis:
-        C = 100
-        #C = 72.09000000000003
+        #C = 100
+        C = 51.42000000000004
         limite_rodadas = 38
         q_nome_posicao = ["ata","gol","lat","mei","tec","zag"]
         i_esquema_tatico = 0
+        solucoes_rodada_anterior = []
+        jogadores_rodada_anterior = []
         # q_i é o esquema tático
         for q_i in q:
             # Incrementa o limite_rodadas porque o Python não considera o valor limite no laço de repetição
-            for rodada in range(1, limite_rodadas+1):
-            #for rodada in [17,18,19]:
+            #for rodada in range(1, limite_rodadas+1):
+            for rodada in [34,35,36]:
                 solucoes_por_rodada = []
+                
                 print("\n\nCOMEÇOU A RODADA: " + str(rodada))
                 print("Perfil: " + perfil + "; Esquema Tático: " + q_legivel[i_esquema_tatico])
                 print("Quantidade de Cartoletas disponiveis na rodada: " + str(C))
@@ -248,23 +251,24 @@ def run(perfis = [], q = [], rodadas = []):
                 custo_jogadores_escolhidos_rodada_atual = 0.0
                 jogadores_escolhidos = []
                 indice_jogadores_escolhidos = 0
+                
                 for epsilon in epsilons:
                     solucao_maior_score, jogadores_escolhidos_modelo, custo_solucao = CalcularModelo(rodada, J, c, a, q_i, epsilon)
                     jogadores_escolhidos.append(jogadores_escolhidos_modelo)
                     solucoes.append((solucao_maior_score,custo_solucao,rodada,indice_jogadores_escolhidos))
                     solucoes_por_rodada.append((solucao_maior_score,custo_solucao,rodada,indice_jogadores_escolhidos))
-                    indice_jogadores_escolhidos += 1
-                    
-                    #print(epsilon, "epsilon\n")
+                    indice_jogadores_escolhidos += 1                    #print(epsilon, "epsilon\n")
                 
-                fronteira_eficiente = FronteiraEficiente(solucoes_por_rodada, jogadores_escolhidos)
-                solucoes_eficiente, jogadores_escolhidos_solucoes_eficiente = fronteira_eficiente.CalcularFronteiraEficiente()
-                print("\n", solucoes_eficiente, "\nsolucoes_eficiente\n")
-                #jogadores_escolhidos_solucoes_eficiente = fronteira_eficiente.RetornaJogadoresSolucoesEficiente()
+                if len(epsilons) != 0:
+                    fronteira_eficiente = FronteiraEficiente(solucoes_por_rodada, jogadores_escolhidos)
+                    solucoes_eficiente, jogadores_escolhidos_solucoes_eficiente = fronteira_eficiente.CalcularFronteiraEficiente()
+                    print("\n", solucoes_eficiente, "\nsolucoes_eficiente\n")
+                    #jogadores_escolhidos_solucoes_eficiente = fronteira_eficiente.RetornaJogadoresSolucoesEficiente()
 
-                # Escolhe a solução para cada Perfil de Jogador Virtual
-                seletor_solucoes = SeletorDeSolucoes(perfil, jogadores_escolhidos_solucoes_eficiente, solucoes_eficiente, C)
-                solucao_escolhida_pelo_perfil, jogadores_solucao_escolhida_pelo_perfil = seletor_solucoes.EscolherSolucao()
+                    # Escolhe a solução para cada Perfil de Jogador Virtual
+                    seletor_solucoes = SeletorDeSolucoes(perfil, jogadores_escolhidos_solucoes_eficiente, solucoes_eficiente, C)
+                    solucao_escolhida_pelo_perfil, jogadores_solucao_escolhida_pelo_perfil = seletor_solucoes.EscolherSolucao()
+                    
                 print(solucao_escolhida_pelo_perfil, "solucao_escolhida_pelo_perfil")
                 print(type(solucao_escolhida_pelo_perfil), "type(solucao_escolhida_pelo_perfil)")
                 print(len(solucao_escolhida_pelo_perfil), "len(solucao_escolhida_pelo_perfil)")
