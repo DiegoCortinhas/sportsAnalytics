@@ -151,8 +151,8 @@ def CalcularModelo(rodada, J, c, a, q_i, epsilon):
     
     m.objective = maximize(somatorio_score)
     m.verbose = 0
-    m.write('model.lp')
-    m.write('model.mps')
+    #m.write('model.lp')
+    #m.write('model.mps')
     solucao = m.optimize()
 
     #for i in range(len(P)):
@@ -202,20 +202,20 @@ def run(perfis = [], q = [], rodadas = []):
         #[2,1,0,5,1,3]
         # 4-3-3
         [3,1,2,3,1,2]
+        # 5-3-2
+        #[2,1,2,3,1,3]
     ]
     for perfil in perfis:
-        #C = 100
-        C = 51.42000000000004
+        C = 100
+        #C = 51.42000000000004
         limite_rodadas = 38
         q_nome_posicao = ["ata","gol","lat","mei","tec","zag"]
         i_esquema_tatico = 0
-        solucoes_rodada_anterior = []
-        jogadores_rodada_anterior = []
         # q_i é o esquema tático
         for q_i in q:
             # Incrementa o limite_rodadas porque o Python não considera o valor limite no laço de repetição
-            #for rodada in range(1, limite_rodadas+1):
-            for rodada in [34,35,36]:
+            for rodada in range(1, limite_rodadas+1):
+            #for rodada in [34,35,36,37,38]:
                 solucoes_por_rodada = []
                 
                 print("\n\nCOMEÇOU A RODADA: " + str(rodada))
@@ -298,7 +298,20 @@ def run(perfis = [], q = [], rodadas = []):
                     
                     #Se o jogador não jogar a prox rodada pega o custo dele na rodada arual
                     if jogador_escolhido_na_prox_rodada is None:
-                        jogadores_escolhidos_na_proxima_rodada.append(i)
+                        custo_jogador_rodada_atual = float(i[3])
+                        posicao_jogador_rodada_atual = i[2]
+
+                        if rodada < 38:
+                            jogador_menor_custo_da_posicao_na_proxima_rodada = banco.BuscarJogadorComMenorCustoProximaRodada(rodada, posicao_jogador_rodada_atual)
+                            custo_jogador_menor_custo_da_posicao_na_proxima_rodada = float(jogador_menor_custo_da_posicao_na_proxima_rodada[3])
+
+                            if max(custo_jogador_rodada_atual, custo_jogador_menor_custo_da_posicao_na_proxima_rodada ) == custo_jogador_rodada_atual:
+                                jogadores_escolhidos_na_proxima_rodada.append(i)
+                            else:
+                                jogadores_escolhidos_na_proxima_rodada.append(jogador_menor_custo_da_posicao_na_proxima_rodada)
+                        else:
+                            jogadores_escolhidos_na_proxima_rodada.append(i)
+
                 
                 #print(jogadores_escolhidos_na_proxima_rodada, "jogadores_escolhidos_na_proxima_rodada")
 

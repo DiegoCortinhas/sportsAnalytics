@@ -3,7 +3,7 @@ from mysql.connector import Error
 
 class DbConnector:
     def __init__(self):
-        self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='admin')
+        self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='')
         self.nome_tabela = "valorizacao_new"
         #self.nome_tabela = "valorizacao_mock"
         self.ano_base = "2019"
@@ -66,6 +66,27 @@ class DbConnector:
         cursor.execute(sql, parametros)
         resultado = cursor.fetchone()
         return resultado
+
+    def BuscarJogadorComMenorCustoProximaRodada(self, rodada, posicao):
+        cursor = self.connection.cursor()
+        proxima_rodada = rodada + 1
+        parametros = (str(proxima_rodada), posicao, str(proxima_rodada), posicao)
+
+
+        sql = "SELECT atletas_nome, atletas_atleta_id, atletas_posicao_id, atletas_preco_num, atletas_pontos_num, atletas_media_num \
+            FROM " + self.nome_tabela + " where atletas_rodada_id = %s AND atletas_pontos_num <> '0' \
+             AND ANO = " + self.ano_base + " AND atletas_posicao_id = %s"
+        
+        sql_menor_custo_proxima_rodada = " AND atletas_preco_num = (SELECT MIN(cast(atletas_preco_num as double)) from " + self.nome_tabela + " where atletas_rodada_id = %s AND atletas_pontos_num <> '0' AND ANO = " + self.ano_base + " AND atletas_posicao_id = %s)"
+
+        sql = sql + sql_menor_custo_proxima_rodada
+        cursor.execute(sql, parametros)
+        resultado = cursor.fetchall()
+
+        if len(resultado) == 0:
+            return None
+        else:
+            return resultado[0]
 
     def CalcularMediaScorePorRodadaEAno(self, rodada, ano, id_jogador):
         cursor = self.connection.cursor()
