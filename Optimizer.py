@@ -30,52 +30,24 @@ def FormatarJogadoresPorRodada(jogadores_por_rodada):
 
     return jogadores_resultado, custo_jogadores_resultado, score_jogadores_resultado, media_jogadores_resultado
 
-def CalcularMediaScorePorRodadaEAno(ano_base_calculo, rodada, J):
-    ano_anterior = ano_base_calculo - 1
-    qtd_rodadas = len(range(0, rodada))
-    medias = []
-    for i in range(len(J)):
-        # Lembrar que medias_rodadas_anteriores[i] e medias_ano_anterior[i] retornam uma tupla (id_jogador, valor_media)
-        media_rodadas_anteriores = banco.CalcularMediaScorePorRodadaEAno(rodada, ano_base_calculo, J[i])
-        media_ano_anterior = banco.CalcularMediaScorePorRodadaEAno(None, ano_anterior, J[i])[0][0]
-        media_rodada = 0
-        #media_rodadas_anteriores vem como lista de tuplas Exemplo: [('-1.6',)]
-        for j in media_rodadas_anteriores:
-            media_rodada += float(j[0])
-        
-        media = (media_rodada + float(media_ano_anterior)) / (qtd_rodadas + 1)
-        medias.append(media)
-
-    return medias
-
 def CalcularTimeMaisBaratoDaRodada(rodada, q_i, q_nome_posicao):
     time_mais_barato = []
-    time_mais_caro = []
-    contador = 0
+    custo_time_mais_barato = 0
+    valores_escolhas = []
     
     # Calcula o time mais barato possível na rodada
     #q_i = [1,1,3,2,3,2]
     for i in range(len(q_i)):
-        
-        jogadores_posicao, valores_escolhas, _, medias_escolhas = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, q_nome_posicao[i]))
-        print(q_i[i], " q_i[i]")
-        print(valores_escolhas, " valores escolhas")
-        escolhas_mais_barato = heapq.nsmallest(q_i[i], valores_escolhas)
-        print(escolhas_mais_barato, " escolhas mais barato")
-
-        jogadores_ja_escolhidos = []
-        contador+=1
-        #limite_inferior_epsilon = 0
-        for escolha in escolhas_mais_barato:
-            indice_escolha_mais_barato=indexOf(valores_escolhas, escolha)
-            del valores_escolhas[indice_escolha_mais_barato]
-            jogador_escolhido = jogadores_posicao[indice_escolha_mais_barato]
-            # Impede o jogador de ser escolhido duaas vezes em posições diferentes. (Exemplo do William Arão)
-            if jogador_escolhido not in jogadores_ja_escolhidos:
-                jogadores_ja_escolhidos.append(jogador_escolhido)
-                time_mais_barato.append(jogador_escolhido)
-        
-    return time_mais_barato, valores_escolhas
+        jogadores_posicao = banco.BuscarJogadoresMaisBaratosPorRodadaEPosicao(rodada, q_nome_posicao[i], q_i[i])
+        for jogador in jogadores_posicao:
+            time_mais_barato.append(jogador)
+    
+    print(time_mais_barato, "time_mais_barato")
+    for jogador in time_mais_barato:
+        custo_time_mais_barato += float(jogador[3])
+        valores_escolhas.append(float(jogador[3]))
+    
+    return time_mais_barato, valores_escolhas, custo_time_mais_barato
 
 def CalculaEpsilons(limite_inferior_epsilon, C, valores_escolhas):
     epsilon = float(limite_inferior_epsilon)
@@ -225,25 +197,10 @@ def run(perfis = [], q = [], rodadas = []):
                 print("Perfil: " + perfil + "; Esquema Tático: " + q_legivel[i_esquema_tatico])
                 print("Quantidade de Cartoletas disponiveis na rodada: " + str(C))
 
-                time_mais_barato, valores_escolhas = CalcularTimeMaisBaratoDaRodada(rodada, q_i, q_nome_posicao)
-                limite_inferior_epsilon = 0
-                lista_time_mais_barato = []
-                
-                #print("\n\nTIME MAIS BARATO CALCULADO PARA EPSILON")
-                for jogador_id in time_mais_barato:
-                    jogador = banco.BuscarJogadorPorRodadaEId(rodada,jogador_id)
-                    
-                    #  Soma os custos para o cálculo do Limite inferior de Epsilon
-                    limite_inferior_epsilon += float(jogador[3])
-                    nome_jogador = str(jogador[0])
-                    posicao_jogador = str(jogador[2])
-                    custo_jogador = str(jogador[3])
-                    score_jogador = str(jogador[4])
-                    lista_time_mais_barato.append(jogador)
+                time_mais_barato, valores_escolhas, limite_inferior_epsilon = CalcularTimeMaisBaratoDaRodada(rodada, q_i, q_nome_posicao)
 
-                    #print(nome_jogador + "(" + posicao_jogador + ") -> Media: " + score_jogador + "; Custo: " + custo_jogador )
+                dataframe_time_mais_barato = pd.DataFrame(time_mais_barato, columns=["nome","id","posicao","custo","score","media"])
 
-                dataframe_time_mais_barato = pd.DataFrame(lista_time_mais_barato,columns=["nome","id","posicao","custo","score","variacao"])
                 print(dataframe_time_mais_barato, " Dataframe time Mais Barato")
 
                 print("LIMITE INFERIOR PARA EPSILON: " + str(limite_inferior_epsilon) + "\n")
