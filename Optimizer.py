@@ -23,10 +23,10 @@ def FormatarJogadoresPorRodada(jogadores_por_rodada):
     media_jogadores_resultado = []
 
     for jogador in jogadores_por_rodada:
-        jogadores_resultado.append(jogador[1])
-        custo_jogadores_resultado.append(jogador[2])
-        score_jogadores_resultado.append(jogador[3])
-        media_jogadores_resultado.append(jogador[4])
+        jogadores_resultado.append (jogador[1])
+        custo_jogadores_resultado.append(float(jogador[2]))
+        score_jogadores_resultado.append(float(jogador[3]))
+        media_jogadores_resultado.append(float(jogador[4]))
 
     return jogadores_resultado, custo_jogadores_resultado, score_jogadores_resultado, media_jogadores_resultado
 
@@ -58,14 +58,17 @@ def CalcularTimeMaisBaratoDaRodada(rodada, q_i, q_nome_posicao):
     for i in range(len(q_i)):
         
         jogadores_posicao, valores_escolhas, _, medias_escolhas = FormatarJogadoresPorRodada(banco.BuscarJogadoresPorRodadaEPosicao(rodada, q_nome_posicao[i]))
-        
+        print(q_i[i], " q_i[i]")
+        print(valores_escolhas, " valores escolhas")
         escolhas_mais_barato = heapq.nsmallest(q_i[i], valores_escolhas)
+        print(escolhas_mais_barato, " escolhas mais barato")
 
         jogadores_ja_escolhidos = []
         contador+=1
         #limite_inferior_epsilon = 0
         for escolha in escolhas_mais_barato:
             indice_escolha_mais_barato=indexOf(valores_escolhas, escolha)
+            del valores_escolhas[indice_escolha_mais_barato]
             jogador_escolhido = jogadores_posicao[indice_escolha_mais_barato]
             # Impede o jogador de ser escolhido duaas vezes em posições diferentes. (Exemplo do William Arão)
             if jogador_escolhido not in jogadores_ja_escolhidos:
@@ -206,16 +209,16 @@ def run(perfis = [], q = [], rodadas = []):
         #[2,1,2,3,1,3]
     ]
     for perfil in perfis:
-        C = 100
-        #C = 51.42000000000004
+        #C = 100
+        C = 51.36999999999997
         limite_rodadas = 38
         q_nome_posicao = ["ata","gol","lat","mei","tec","zag"]
         i_esquema_tatico = 0
         # q_i é o esquema tático
         for q_i in q:
             # Incrementa o limite_rodadas porque o Python não considera o valor limite no laço de repetição
-            for rodada in range(1, limite_rodadas+1):
-            #for rodada in [34,35,36,37,38]:
+            #for rodada in range(1, limite_rodadas+1):
+            for rodada in [34,35,36]:
                 solucoes_por_rodada = []
                 
                 print("\n\nCOMEÇOU A RODADA: " + str(rodada))
@@ -224,6 +227,8 @@ def run(perfis = [], q = [], rodadas = []):
 
                 time_mais_barato, valores_escolhas = CalcularTimeMaisBaratoDaRodada(rodada, q_i, q_nome_posicao)
                 limite_inferior_epsilon = 0
+                lista_time_mais_barato = []
+                
                 #print("\n\nTIME MAIS BARATO CALCULADO PARA EPSILON")
                 for jogador_id in time_mais_barato:
                     jogador = banco.BuscarJogadorPorRodadaEId(rodada,jogador_id)
@@ -234,8 +239,12 @@ def run(perfis = [], q = [], rodadas = []):
                     posicao_jogador = str(jogador[2])
                     custo_jogador = str(jogador[3])
                     score_jogador = str(jogador[4])
+                    lista_time_mais_barato.append(jogador)
 
                     #print(nome_jogador + "(" + posicao_jogador + ") -> Media: " + score_jogador + "; Custo: " + custo_jogador )
+
+                dataframe_time_mais_barato = pd.DataFrame(lista_time_mais_barato,columns=["nome","id","posicao","custo","score","variacao"])
+                print(dataframe_time_mais_barato, " Dataframe time Mais Barato")
 
                 print("LIMITE INFERIOR PARA EPSILON: " + str(limite_inferior_epsilon) + "\n")
                 # Aqui vai carregar todos os jogadores disponíveis NAQUELA RODADA
@@ -259,16 +268,15 @@ def run(perfis = [], q = [], rodadas = []):
                     solucoes_por_rodada.append((solucao_maior_score,custo_solucao,rodada,indice_jogadores_escolhidos))
                     indice_jogadores_escolhidos += 1                    #print(epsilon, "epsilon\n")
                 
-                if len(epsilons) != 0:
-                    fronteira_eficiente = FronteiraEficiente(solucoes_por_rodada, jogadores_escolhidos)
-                    solucoes_eficiente, jogadores_escolhidos_solucoes_eficiente = fronteira_eficiente.CalcularFronteiraEficiente()
-                    print("\n", solucoes_eficiente, "\nsolucoes_eficiente\n")
-                    #jogadores_escolhidos_solucoes_eficiente = fronteira_eficiente.RetornaJogadoresSolucoesEficiente()
-
-                    # Escolhe a solução para cada Perfil de Jogador Virtual
-                    seletor_solucoes = SeletorDeSolucoes(perfil, jogadores_escolhidos_solucoes_eficiente, solucoes_eficiente, C)
-                    solucao_escolhida_pelo_perfil, jogadores_solucao_escolhida_pelo_perfil = seletor_solucoes.EscolherSolucao()
-                    
+                
+                fronteira_eficiente = FronteiraEficiente(solucoes_por_rodada, jogadores_escolhidos)
+                solucoes_eficiente, jogadores_escolhidos_solucoes_eficiente = fronteira_eficiente.CalcularFronteiraEficiente()
+                print("\n", solucoes_eficiente, "\nsolucoes_eficiente\n")
+                #jogadores_escolhidos_solucoes_eficiente = fronteira_eficiente.RetornaJogadoresSolucoesEficiente()
+                # Escolhe a solução para cada Perfil de Jogador Virtual
+                seletor_solucoes = SeletorDeSolucoes(perfil, jogadores_escolhidos_solucoes_eficiente, solucoes_eficiente, C)
+                solucao_escolhida_pelo_perfil, jogadores_solucao_escolhida_pelo_perfil = seletor_solucoes.EscolherSolucao()
+                
                 print(solucao_escolhida_pelo_perfil, "solucao_escolhida_pelo_perfil")
                 print(type(solucao_escolhida_pelo_perfil), "type(solucao_escolhida_pelo_perfil)")
                 print(len(solucao_escolhida_pelo_perfil), "len(solucao_escolhida_pelo_perfil)")

@@ -3,7 +3,7 @@ from mysql.connector import Error
 
 class DbConnector:
     def __init__(self):
-        self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='')
+        self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='admin')
         self.nome_tabela = "valorizacao_new"
         #self.nome_tabela = "valorizacao_mock"
         self.ano_base = "2019"
