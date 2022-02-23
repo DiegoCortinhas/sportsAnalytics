@@ -1,3 +1,4 @@
+from datetime import datetime
 from re import L
 import sys, heapq
 from pprint import pprint
@@ -42,7 +43,7 @@ def CalcularTimeMaisBaratoDaRodada(rodada, q_i, q_nome_posicao):
         for jogador in jogadores_posicao:
             time_mais_barato.append(jogador)
     
-    print(time_mais_barato, "time_mais_barato")
+    #print(time_mais_barato, "time_mais_barato")
     for jogador in time_mais_barato:
         custo_time_mais_barato += float(jogador[3])
         valores_escolhas.append(float(jogador[3]))
@@ -169,31 +170,32 @@ def run(perfis = [], q = [], rodadas = []):
     #Deixando somente 1 perfil para teste
     perfis = ["prefere_mais_score"]
     # ["ata", "gol", "lat", "mei", "tec", "zag"]
-    q_legivel = ["4-3-3"]
+    q_legivel = ["4-4-2"]
     q = [
         # 4-4-2
-        #[2,1,2,4,1,2],
+        [2,1,2,4,1,2]
         # 3-5-2
         #[2,1,0,5,1,3]
         # 4-3-3
-        [3,1,2,3,1,2]
+        #[3,1,2,3,1,2]
         # 5-3-2
         #[2,1,2,3,1,3]
     ]
     for perfil in perfis:
-        #C = 100
-        C = 51.36999999999997
+        C = 100
+        #C = 51.36999999999997
         limite_rodadas = 38
         q_nome_posicao = ["ata","gol","lat","mei","tec","zag"]
         i_esquema_tatico = 0
         # q_i é o esquema tático
         for q_i in q:
             # Incrementa o limite_rodadas porque o Python não considera o valor limite no laço de repetição
-            #for rodada in range(1, limite_rodadas+1):
-            for rodada in [34,35,36]:
+            for rodada in range(1, limite_rodadas+1):
+            #for rodada in [34,35,36,37,38]:
                 solucoes_por_rodada = []
                 
                 print("\n\nCOMEÇOU A RODADA: " + str(rodada))
+                print(datetime.now().strftime('%d/%m/%Y %H:%M'), " Hora que começou a rodada")
                 print("Perfil: " + perfil + "; Esquema Tático: " + q_legivel[i_esquema_tatico])
                 print("Quantidade de Cartoletas disponiveis na rodada: " + str(C))
 
@@ -297,11 +299,12 @@ def run(perfis = [], q = [], rodadas = []):
 
                 # "Vende" o time e Atualiza o C para a próxima rodada
                 C = C_proxima_rodada
-                
+                print(datetime.now().strftime('%d/%m/%Y %H:%M'), " Hora que terminou a rodada")    
                 print("############################################################################################\n\n")
 
             i_esquema_tatico += 1
             print("############################################################################################\n\n")
+            
 
 run()
 
