@@ -24,7 +24,7 @@ class DbConnector:
         parametros = (str(rodada), )
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_preco_num, atletas_pontos_num, atletas_variacao_num, atletas_posicao_id \
             FROM " + self.nome_tabela + " where atletas_rodada_id = %s \
-                AND ANO = " + self.ano_base + " AND atletas_status_id in ('Provável', 'Dúvida')"
+                AND ANO = " + self.ano_base + " AND atletas_status_id in ('Provável', 'Dúvida','Nulo')"
 
         if posicao != "":
             sql += " AND atletas_posicao_id = %s"
@@ -39,7 +39,7 @@ class DbConnector:
         cursor = self.connection.cursor()
         parametros = (posicao, str(rodada), limite )
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_posicao_id, atletas_preco_num, atletas_pontos_num, atletas_media_num \
-            FROM " + self.nome_tabela + " WHERE ano = 2019 AND atletas_posicao_id = %s AND atletas_status_id in ('Provável', 'Dúvida') \
+            FROM " + self.nome_tabela + " WHERE ano = 2019 AND atletas_posicao_id = %s AND atletas_status_id in ('Provável', 'Dúvida','Nulo') \
             AND atletas_rodada_id = %s  \
             ORDER BY atletas_preco_num ASC LIMIT %s"
         
@@ -52,7 +52,7 @@ class DbConnector:
         parametros = (str(rodada), )
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_preco_num, atletas_pontos_num, atletas_media_num \
             FROM " + self.nome_tabela + " where atletas_rodada_id = %s \
-                AND ANO = " + self.ano_base + " AND atletas_status_id in ('Provável', 'Dúvida') order by atletas_posicao_id, atletas_atleta_id;"
+                AND ANO = " + self.ano_base + " AND atletas_status_id in ('Provável', 'Dúvida','Nulo') order by atletas_posicao_id, atletas_atleta_id;"
         
         cursor.execute(sql, parametros)
         resultado = cursor.fetchall()
@@ -73,7 +73,7 @@ class DbConnector:
         cursor = self.connection.cursor(buffered=True)
         parametros = (str(rodada), str(jogador_id), )
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_posicao_id, atletas_preco_num, atletas_pontos_num, atletas_media_num \
-            FROM " + self.nome_tabela + " where atletas_rodada_id = %s AND atletas_status_id in ('Provável', 'Dúvida') \
+            FROM " + self.nome_tabela + " where atletas_rodada_id = %s AND atletas_status_id in ('Provável', 'Dúvida','Nulo') \
                 AND  atletas_atleta_id = %s AND ANO = " + self.ano_base
         cursor.execute(sql, parametros)
         resultado = cursor.fetchone()
@@ -86,10 +86,10 @@ class DbConnector:
 
 
         sql = "SELECT atletas_nome, atletas_atleta_id, atletas_posicao_id, atletas_preco_num, atletas_pontos_num, atletas_media_num \
-            FROM " + self.nome_tabela + " where atletas_rodada_id = %s AND atletas_status_id in ('Provável', 'Dúvida') \
+            FROM " + self.nome_tabela + " where atletas_rodada_id = %s AND atletas_status_id in ('Provável', 'Dúvida','Nulo') \
              AND ANO = " + self.ano_base + " AND atletas_posicao_id = %s"
         
-        sql_menor_custo_proxima_rodada = " AND atletas_preco_num = (SELECT MIN(cast(atletas_preco_num as double)) from " + self.nome_tabela + " where atletas_rodada_id = %s AND atletas_status_id in ('Provável', 'Dúvida') AND ANO = " + self.ano_base + " AND atletas_posicao_id = %s)"
+        sql_menor_custo_proxima_rodada = " AND atletas_preco_num = (SELECT MIN(cast(atletas_preco_num as double)) from " + self.nome_tabela + " where atletas_rodada_id = %s AND atletas_status_id in ('Provável', 'Dúvida','Nulo') AND ANO = " + self.ano_base + " AND atletas_posicao_id = %s)"
 
         sql = sql + sql_menor_custo_proxima_rodada
         cursor.execute(sql, parametros)
