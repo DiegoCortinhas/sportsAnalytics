@@ -9,7 +9,6 @@ from unittest.mock import Mock
 from mip import Model, xsum, maximize, minimize, BINARY, CBC, MAXIMIZE
 from mip.constants import OptimizationStatus
 import DbConnector
-from mockBase import MockBase, MockJ
 from fronteiraEficiente import FronteiraEficiente
 from SeletorDeSolucoes import SeletorDeSolucoes
 import pandas as pd

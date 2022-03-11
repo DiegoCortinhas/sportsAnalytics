@@ -3,9 +3,8 @@ from mysql.connector import Error
 
 class DbConnector:
     def __init__(self):
-        self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='admin')
-        self.nome_tabela = "valorizacao_new_2"
-        #self.nome_tabela = "valorizacao_mock"
+        self.connection = mysql.connector.connect(host='localhost', database='cartolafc', user='root', password='')
+        self.nome_tabela = "valorizacao"
         self.ano_base = "2019"
 
     def InsertBanco(self,linha):
